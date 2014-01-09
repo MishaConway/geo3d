@@ -18,6 +18,14 @@ module Geo3d
       [x, y, z, w]
     end
 
+    def +@
+      self * 1
+    end
+
+    def -@
+      self * -1
+    end
+
     def + vec
       self.class.new x + vec.x, y + vec.y, z + vec.z, w + vec.w
     end
