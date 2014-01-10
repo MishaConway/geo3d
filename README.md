@@ -87,40 +87,72 @@ For instance, matrix[0,1] = 7 writes seven to the element in column zero and row
 
 Matrices are overloaded with all of the basic math operations
 
-mat_a + mat_b   #addition
-
-mat_a - mat_b   #subtraction
-
-mat * scalar  #scalar multiplication
-
-mat / scalar  #scalar division
-
-mat_a * mat_b #matrix multiplication
-
-mat * vec  #matrix vector multiplication
+Addition
+```
+    mat_a + mat_b
+```
+Subtraction
+```
+    mat_a - mat_b
+```
+Scalar Multiplication
+```
+    mat * scalar
+```
+Scalar Division
+    mat / scalar
+```
+Matrix Multiplication
+```
+    mat_a * mat_b
+```
+Matrix Vector Multiplication
+```
+    mat * vec
+```
 
 
 Additional matrix operations
-mat.inverse #returns inverse of matrix
-mat.inverse true  #returns inverse of matrix along with its determinant
-mat.tranpose #returns transpose of matrix
+
+Inverse
+```
+    mat.inverse #returns inverse of matrix
+    mat.inverse true  #returns inverse of matrix along with its determinant
+```
+Transpose
+```
+    mat.tranpose
+```
 
 Common matrix constructors
-Geo3d::Matrix.identity  #returns the identity matrix
-Geo3d::Matrix.translation x,y,z  #returns a translation matrix
-Geo3d::Matrix.scaling x,y,z #returns a scaling matrix
-Geo3d::Matrix.uniform_scaling scale #returns a uniform scaling matrix
 
+Identity
+```
+    Geo3d::Matrix.identity  #returns the identity matrix
+```
+Translation
+```
+    Geo3d::Matrix.translation x,y,z  #returns a translation matrix
+```
+Scaling
+```
+    Geo3d::Matrix.scaling x,y,z #returns a scaling matrix
+    Geo3d::Matrix.uniform_scaling scale #returns a uniform scaling matrix
+```
 Projection matrix constructors
-Geo3d::Matrix.matrix_perspective_fov_rh fovy, aspect, z_near, z_far  #returns a right handed perspective projection matrix
-Geo3d::Matrix.matrix_perspective_fov_lh fovy, aspect, z_near, z_far  #returns a left handed perspective projection matrix
-
+```
+    Geo3d::Matrix.matrix_perspective_fov_rh fovy, aspect, z_near, z_far  #returns a right handed perspective projection matrix
+    Geo3d::Matrix.matrix_perspective_fov_lh fovy, aspect, z_near, z_far  #returns a left handed perspective projection matrix
+```
 View matrix constructors
-Geo3d::Matrix.look_at_rh eye_position, look_at_position, up_direction #returns a right handed view matrix
-Geo3d::Matrix.look_at_lh eye_position, look_at_position, up_direction #returns a left handed view matrix
-
+```
+    Geo3d::Matrix.look_at_rh eye_position, look_at_position, up_direction #returns a right handed view matrix
+    Geo3d::Matrix.look_at_lh eye_position, look_at_position, up_direction #returns a left handed view matrix
+```
 Misc constructors
-Geo3d::Matrix.reflection reflection_plane  #returns a reflection matrix where reflection_plane is a Geo3d::Vector that corresponds to the normal of the plane
+```
+    Geo3d::Matrix.reflection reflection_plane  #returns a reflection matrix where reflection_plane is a Geo3d::Vector that corresponds to the normal of the plane
+```
 
 
 
