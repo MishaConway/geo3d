@@ -32,9 +32,14 @@ sum = m * sum #apply the transform to our vector
 Describes a three dimensional point or direction. A vector has the following read/write attributes: x, y, z, w
 
 Vectors are overloaded with all of the basic math operations.
-    vec_a + vec_b   #addition
+
+Addition
+    vec_a + vec_b
+Subtraction
     vec_a - vec_b   #subtraction
+Multiplication
     vec * scalar  #scalar multiplication
+Division
     vec / scalar  #scalar division
 
 Additional vector operations
