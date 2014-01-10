@@ -53,12 +53,19 @@ A 4x4 matrix used for transforming vectors. Elements can be read/written to with
 For instance, matrix[0,1] = 7 writes seven to the element in column zero and row one.
 
 Matrices are overloaded with all of the basic math operations
+
 mat_a + mat_b   #addition
+
 mat_a - mat_b   #subtraction
+
 mat * scalar  #scalar multiplication
+
 mat / scalar  #scalar division
+
 mat_a * mat_b #matrix multiplication
+
 mat * vec  #matrix vector multiplication
+
 
 Additional matrix operations
 mat.inverse #returns inverse of matrix
