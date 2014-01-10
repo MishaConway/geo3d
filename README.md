@@ -17,7 +17,7 @@ Or install it yourself as:
     $ gem install geo3d
 
 ## Usage
-
+```
 a = Geo3d::Vector.new 1, 0, 0
 b = Geo3d::Vector.new 0, 1, 0
 sum = a + b # add them together
@@ -25,6 +25,7 @@ sum *= 2 #double the vector
 
 m = Geo3d::Matrix.translation 0, 5, 0 #create a translation matrix that transforms a points 5 units on the y-axis
 sum = m * sum #apply the transform to our vector
+```
 
 
 ## Vector
@@ -39,21 +40,44 @@ Addition
 ```
 Subtraction
 ```
-    vec_a - vec_b   #subtraction
+    vec_a - vec_b
 ```
 Multiplication
-    vec * scalar  #scalar multiplication
+```
+    vec * scalar
+```
 Division
-    vec / scalar  #scalar division
+```
+    vec / scalar
+```
 
 Additional vector operations
-vec.dot  #returns dot product
-vec_a.cross vec_b  #returns cross product
-vec.length  #returns magnitude
-vec.length_squared #returns magnitude squared
-vec.normalize #returns a normalized version of the vector
-vec.normalize! #normalizes the vector in place
-vec_a.lerp vec_b, 0.4  #returns a new vector which is the linear interpolation between vec_a and vec_b
+
+Dot product
+```
+    vec.dot
+```
+Cross product
+```
+vec_a.cross vec_b
+```
+Magnitude
+```
+    vec.length
+```
+Squared Magnitude
+```
+    vec.length_squared
+```
+Normalize
+```
+    vec.normalize #returns a normalized version of the vector
+    vec.normalize! #normalizes the vector in place
+```
+Linear Interpolation
+```
+    vec_a.lerp vec_b, 0.4  #returns a new vector which is the 40% linear interpolation between vec_a and vec_b
+```
 
 
 ## Matrix
