@@ -5,7 +5,7 @@ module Geo3d
     attr_accessor :_31, :_32, :_33, :_34
     attr_accessor :_41, :_42, :_43, :_44
 
-    def initialize
+    def initialize *args
       @_11 = 0, @_12 = 0, @_13 = 0, @_14 = 0, @_21 = 0, @_22 = 0, @_23 = 0, @_24 = 0, @_31 = 0, @_32 = 0, @_33 = 0, @_34 = 0, @_41 = 0, @_42 = 0, @_43 = 0, @_44 = 0
       @_11 = args[0] if args.size > 0
       @_12 = args[1] if args.size > 1
@@ -29,6 +29,14 @@ module Geo3d
       [_11, _12, _13, _14, _21, _22, _23, _24, _31, _32, _33, _34, _41, _42, _43, _44]
     end
 
+    def [] x, y
+      to_a[4*y + x]
+    end
+
+    def []= x, y, v
+      send (%w{_11 _12 _13 _14 _21 _22 _23 _24 _31 _32 _33 _34 _41 _42 _43 _44}[4*y + x] + '=').to_sym, v
+    end
+
     def +@
       self * 1
     end
@@ -36,7 +44,6 @@ module Geo3d
     def -@
       self * -1
     end
-
 
     def + mat
       sum = Matrix.new
@@ -149,6 +156,8 @@ module Geo3d
     def / v
       if Matrix == v.class
         self * v.inverse
+      elsif Vector == v.class
+        raise 'dividing matrices by vectors not currently supported'
       else
         result = Matrix.new
         scalar = v
@@ -325,7 +334,7 @@ module Geo3d
     end
 
     def self.matrix_perspective_fov_lh fovy, aspect, zn, zf
-      y_scale = 1.0 / Math.tan(0.5 f*fovy)
+      y_scale = 1.0 / Math.tan(0.5*fovy)
       x_scale = y_scale / aspect
       matrix = Matrix.new
       matrix._11 = x_scale
@@ -444,12 +453,12 @@ module Geo3d
     end
 
     def self.scaling x, y, z
-    	scaling_matrix = Matrix.new
-    	scaling_matrix._11 = x
-    	scaling_matrix._22 = y
-    	scaling_matrix._33 = z
-    	scaling_matrix._44 = 1
-    	scaling_matrix
+      scaling_matrix = Matrix.new
+      scaling_matrix._11 = x
+      scaling_matrix._22 = y
+      scaling_matrix._33 = z
+      scaling_matrix._44 = 1
+      scaling_matrix
     end
 
     def self.uniform_scaling scale
@@ -457,22 +466,22 @@ module Geo3d
     end
 
     def self.rotation_y_rh angle
-    	sine = Math.sin angle
-    	cosine = Math.cos angle
-    	rotation_matrix = Matrix.new
-    	rotation_matrix._11 = cosine
+      sine = Math.sin angle
+      cosine = Math.cos angle
+      rotation_matrix = Matrix.new
+      rotation_matrix._11 = cosine
       rotation_matrix._12 = 0
       rotation_matrix._13 = sine
       rotation_matrix._14 = 0
-    	rotation_matrix._21 = rotation_matrix._23 = rotation_matrix._24 = 0
+      rotation_matrix._21 = rotation_matrix._23 = rotation_matrix._24 = 0
       rotation_matrix._22 = 1
-    	rotation_matrix._31 = -sine
+      rotation_matrix._31 = -sine
       rotation_matrix._32 = 0
       rotation_matrix._33 = cosine
       rotation_matrix._34 = 0
-    	rotation_matrix._41 = rotation_matrix._42 = rotation_matrix._43 = 0
+      rotation_matrix._41 = rotation_matrix._42 = rotation_matrix._43 = 0
       rotation_matrix._44 = 1
-    	rotation_matrix
+      rotation_matrix
     end
   end
 end

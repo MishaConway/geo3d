@@ -1,5 +1,5 @@
-require "geo3d/version"
-require 'vec3'
+require 'geo3d/version'
+require 'vector'
 require 'matrix'
 require 'quaternion'
 
