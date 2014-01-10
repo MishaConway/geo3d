@@ -100,6 +100,7 @@ Scalar Multiplication
     mat * scalar
 ```
 Scalar Division
+```
     mat / scalar
 ```
 Matrix Multiplication
