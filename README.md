@@ -34,9 +34,13 @@ Describes a three dimensional point or direction. A vector has the following rea
 Vectors are overloaded with all of the basic math operations.
 
 Addition
+```
     vec_a + vec_b
+```
 Subtraction
+```
     vec_a - vec_b   #subtraction
+```
 Multiplication
     vec * scalar  #scalar multiplication
 Division
