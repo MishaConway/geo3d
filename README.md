@@ -156,6 +156,10 @@ Misc constructors
 ```
 
 
+## Quaternion
+
+Documentation coming soon!
+
 
 
 

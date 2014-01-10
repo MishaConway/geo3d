@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["MishaAConway@gmail.com"]
   spec.description   = %q{Library for common 3d graphics vector and matrix operations}
   spec.summary       = %q{Library for common 3d graphics vector and matrix operations}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/MishaConway/geo3d"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
