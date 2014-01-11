@@ -140,10 +140,22 @@ Scaling
     Geo3d::Matrix.scaling x,y,z #returns a scaling matrix
     Geo3d::Matrix.uniform_scaling scale #returns a uniform scaling matrix
 ```
+Rotation
+```
+    Geo3d::Matrix.rotation_x 0.44 #rotate .44 radians about x axis
+    Geo3d::Matrix.rotation_y 0.44 #rotate .44 radians about y axis
+    Geo3d::Matrix.rotation_z 0.44 #rotate .44 radians about z axis
+
+    axis = Geo3d::Vector.new 1,1,0
+    angle = 0.9
+    Geo3d::Matrix.rotation axis, angle #rotate about an arbitrary axis
+```
 Projection matrix constructors
 ```
-    Geo3d::Matrix.matrix_perspective_fov_rh fovy, aspect, z_near, z_far  #returns a right handed perspective projection matrix
-    Geo3d::Matrix.matrix_perspective_fov_lh fovy, aspect, z_near, z_far  #returns a left handed perspective projection matrix
+    Geo3d::Matrix.perspective_fov_rh fovy, aspect, z_near, z_far  #returns a right handed perspective projection matrix
+    Geo3d::Matrix.perspective_fov_lh fovy, aspect, z_near, z_far  #returns a left handed perspective projection matrix
+    Geo3d::Matrix.ortho_off_center_rh left, right, bottom, top, z_near, z_far #returns a right handed orthographic projection matrix
+    Geo3d::Matrix.ortho_off_center_lh left, right, bottom, top, z_near, z_far #returns a left handed orthographic projection matrix
 ```
 View matrix constructors
 ```

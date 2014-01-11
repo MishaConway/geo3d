@@ -321,7 +321,30 @@ module Geo3d
       transposed_matrix
     end
 
-    def self.matrix_perspective_fov_rh fovy, aspect, zn, zf
+    def print
+      puts "_11: #{_11}\n"
+      puts "_12: #{_12}\n"
+      puts "_13: #{_13}\n"
+      puts "_14: #{_14}\n"
+      puts "_21: #{_21}\n"
+      puts "_22: #{_22}\n"
+      puts "_23: #{_23}\n"
+      puts "_24: #{_24}\n"
+      puts "_31: #{_31}\n"
+      puts "_32: #{_32}\n"
+      puts "_33: #{_33}\n"
+      puts "_34: #{_34}\n"
+      puts "_41: #{_41}\n"
+      puts "_42: #{_42}\n"
+      puts "_43: #{_43}\n"
+      puts "_44: #{_44}\n"
+    end
+
+    def self.perspective_fov_rh fovy, aspect, zn, zf
+      fovy = fovy.to_f
+      aspect = aspect.to_f
+      zn = zn.to_f
+      zf = zf.to_f
       y_scale = 1.0 / Math.tan(0.5*fovy)
       x_scale = y_scale / aspect
       matrix = Matrix.new
@@ -333,16 +356,54 @@ module Geo3d
       matrix
     end
 
-    def self.matrix_perspective_fov_lh fovy, aspect, zn, zf
+    def self.perspective_fov_lh fovy, aspect, zn, zf
+      fovy = fovy.to_f
+      aspect = aspect.to_f
+      zn = zn.to_f
+      zf = zf.to_f
       y_scale = 1.0 / Math.tan(0.5*fovy)
       x_scale = y_scale / aspect
       matrix = Matrix.new
       matrix._11 = x_scale
       matrix._22 = y_scale
-      matrix._33 = zf/(zn - zf)
+      matrix._33 = zf/(zf - zn)
       matrix._34 = 1
-      matrix._43 = -zn*zf/(zn - zf)
+      matrix._43 = zn*zf/(zn - zf)
       matrix
+    end
+
+    def self.ortho_off_center_rh l, r, b, t, zn, zf
+      l = l.to_f
+      r = r.to_f
+      b = b.to_f
+      t = t.to_f
+      zn = zn.to_f
+      zf = zf.to_f
+      m = identity
+      m._11 = 2.0 / (r - l)
+      m._22 = 2.0 / (t - b)
+      m._33 = 1.0 / (zn -zf)
+      m._41 = -1.0 -2.0 *l / (r - l)
+      m._42 = 1.0 + 2.0 * t / (b - t)
+      m._43 = zn / (zn -zf)
+      m
+    end
+
+    def self.ortho_off_center_lh l, r, b, t, zn, zf
+      l = l.to_f
+      r = r.to_f
+      b = b.to_f
+      t = t.to_f
+      zn = zn.to_f
+      zf = zf.to_f
+      m = identity
+      m._11 = 2.0 / (r - l)
+      m._22 = 2.0 / (t - b)
+      m._33 = 1.0 / (zf -zn)
+      m._41 = -1.0 -2.0 *l / (r - l)
+      m._42 = 1.0 + 2.0 * t / (b - t)
+      m._43 = zn / (zn -zf)
+      m
     end
 
     def self.look_at_rh eye_position, look_at_position, up_direction
@@ -465,23 +526,52 @@ module Geo3d
       scaling scale, scale, scale
     end
 
-    def self.rotation_y_rh angle
+    def self.rotation_x angle
+      m = identity
       sine = Math.sin angle
       cosine = Math.cos angle
-      rotation_matrix = Matrix.new
-      rotation_matrix._11 = cosine
-      rotation_matrix._12 = 0
-      rotation_matrix._13 = sine
-      rotation_matrix._14 = 0
-      rotation_matrix._21 = rotation_matrix._23 = rotation_matrix._24 = 0
-      rotation_matrix._22 = 1
-      rotation_matrix._31 = -sine
-      rotation_matrix._32 = 0
-      rotation_matrix._33 = cosine
-      rotation_matrix._34 = 0
-      rotation_matrix._41 = rotation_matrix._42 = rotation_matrix._43 = 0
-      rotation_matrix._44 = 1
-      rotation_matrix
+      m._22 = cosine
+      m._33 = cosine
+      m._23 = sine
+      m._32 = -sine
+      m
+    end
+
+    def self.rotation_y angle
+      m = identity
+      sine = Math.sin angle
+      cosine = Math.cos angle
+      m._11 = cosine
+      m._33 = cosine
+      m._13 = -sine
+      m._31 = sine
+      m
+    end
+
+    def self.rotation_z angle
+      m = identity
+      sine = Math.sin angle
+      cosine = Math.cos angle
+      m._11 = cosine
+      m._22 = cosine
+      m._12 = sine
+      m._21 = -sine
+      m
+    end
+
+    def self.rotation axis, angle
+      v = axis.normalize
+      m = identity
+      m._11 = (1.0  - Math.cos(angle)) * v.x * v.x + Math.cos(angle)
+      m._21 = (1.0  - Math.cos(angle)) * v.x * v.y - Math.sin(angle) * v.z
+      m._31 = (1.0  - Math.cos(angle)) * v.x * v.z + Math.sin(angle) * v.y
+      m._12 = (1.0  - Math.cos(angle)) * v.y * v.x + Math.sin(angle) * v.z
+      m._22 = (1.0  - Math.cos(angle)) * v.y * v.y + Math.cos(angle)
+      m._32 = (1.0  - Math.cos(angle)) * v.y * v.z - Math.sin(angle) * v.x
+      m._13 = (1.0  - Math.cos(angle)) * v.z * v.x - Math.sin(angle) * v.y
+      m._23 = (1.0  - Math.cos(angle)) * v.z * v.y + Math.sin(angle) * v.x
+      m._33 = (1.0  - Math.cos(angle)) * v.z * v.z + Math.cos(angle)
+      m
     end
   end
 end
