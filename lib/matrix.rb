@@ -503,6 +503,33 @@ module Geo3d
       reflection_matrix
     end
 
+    def self.shadow light_position, plane
+      norm = plane.x * plane.x + plane.y * plane.y + plane.z * plane.z
+      normalized_plane = plane / norm
+      dot = normalized_plane.dot(light_position)
+
+      m = Matrix.new
+      m._11 = dot - normalized_plane.a * light_position.x
+      m._12 = -normalized_plane.a * light_position.y
+      m._13 = -normalized_plane.a * light_position.z
+      m._14 = -normalized_plane.a * light_position.w
+      m._21 = -normalized_plane.b * light_position.x
+      m._22 = dot - normalized_plane.b * light_position.y
+      m._23 = -normalized_plane.b * light_position.z
+      m._24 = -normalized_plane.b * light_position.w
+      m._31 = -normalized_plane.c * light_position.x
+      m._32 = -normalized_plane.c * light_position.y
+      m._33 = dot - normalized_plane.c * light_position.z
+      m._34 = -normalized_plane.c * light_position.w
+      m._41 = -normalized_plane.d * light_position.x
+      m._42 = -normalized_plane.d * light_position.y
+      m._43 = -normalized_plane.d * light_position.z
+      m._44 = dot - normalized_plane.d * light_position.w
+
+      m
+    end
+
+
     def self.translation x, y, z
       translation_matrix = Matrix.new
       translation_matrix._11 = translation_matrix._22 = translation_matrix._33 = translation_matrix._44 = 1
@@ -562,15 +589,15 @@ module Geo3d
     def self.rotation axis, angle
       v = axis.normalize
       m = identity
-      m._11 = (1.0  - Math.cos(angle)) * v.x * v.x + Math.cos(angle)
-      m._21 = (1.0  - Math.cos(angle)) * v.x * v.y - Math.sin(angle) * v.z
-      m._31 = (1.0  - Math.cos(angle)) * v.x * v.z + Math.sin(angle) * v.y
-      m._12 = (1.0  - Math.cos(angle)) * v.y * v.x + Math.sin(angle) * v.z
-      m._22 = (1.0  - Math.cos(angle)) * v.y * v.y + Math.cos(angle)
-      m._32 = (1.0  - Math.cos(angle)) * v.y * v.z - Math.sin(angle) * v.x
-      m._13 = (1.0  - Math.cos(angle)) * v.z * v.x - Math.sin(angle) * v.y
-      m._23 = (1.0  - Math.cos(angle)) * v.z * v.y + Math.sin(angle) * v.x
-      m._33 = (1.0  - Math.cos(angle)) * v.z * v.z + Math.cos(angle)
+      m._11 = (1.0 - Math.cos(angle)) * v.x * v.x + Math.cos(angle)
+      m._21 = (1.0 - Math.cos(angle)) * v.x * v.y - Math.sin(angle) * v.z
+      m._31 = (1.0 - Math.cos(angle)) * v.x * v.z + Math.sin(angle) * v.y
+      m._12 = (1.0 - Math.cos(angle)) * v.y * v.x + Math.sin(angle) * v.z
+      m._22 = (1.0 - Math.cos(angle)) * v.y * v.y + Math.cos(angle)
+      m._32 = (1.0 - Math.cos(angle)) * v.y * v.z - Math.sin(angle) * v.x
+      m._13 = (1.0 - Math.cos(angle)) * v.z * v.x - Math.sin(angle) * v.y
+      m._23 = (1.0 - Math.cos(angle)) * v.z * v.y + Math.sin(angle) * v.x
+      m._33 = (1.0 - Math.cos(angle)) * v.z * v.z + Math.cos(angle)
       m
     end
   end

@@ -1,13 +1,17 @@
 module Geo3d
   class Vector
     attr_accessor :x, :y, :z, :w
+    alias :a :x
+    alias :b :y
+    alias :c :z
+    alias :d :w
 
     def initialize *args
       @x, @y, @z, @w = 0, 0, 0, 0
-      @x = args[0] if args.size > 0
-      @y = args[1] if args.size > 1
-      @z = args[2] if args.size > 2
-      @w = args[3] if args.size > 3
+      @x = args[0].to_f if args.size > 0
+      @y = args[1].to_f if args.size > 1
+      @z = args[2].to_f if args.size > 2
+      @w = args[3].to_f if args.size > 3
     end
 
     def to_s
@@ -55,7 +59,7 @@ module Geo3d
     end
 
     def dot vec
-      x * vec.x + y * vec.y + z * vec.z
+      x * vec.x + y * vec.y + z * vec.z + w * vec.w
     end
 
     def normalize!
@@ -64,11 +68,12 @@ module Geo3d
         @x /= len
         @y /= len
         @z /= len
+        @w /= len
       end
     end
 
     def normalize
-      v = self.class.new x, y, z
+      v = self.class.new x, y, z, w
       v.normalize!
       v
     end
