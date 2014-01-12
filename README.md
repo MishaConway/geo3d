@@ -171,6 +171,28 @@ Misc constructors
 
 ## Quaternion
 
+A mathematical construct to represent rotations in 3d space.
+
+Quaternion Multiplication
+```
+    quat_a * quat_b
+```
+Getting axis and angle
+```
+    quat.axis
+    quat.angle
+```
+Converting to a matrix
+```
+    quat.to_matrix
+```
+Constructors
+```
+    Geo3d::Quaternion.from_axis rotation_axis, radians  #returns a quaternion from an axis and angle
+    Geo3d::Quaternion.from_matrix m  #returns a quaternion from a rotation matrix
+
+```
+
 Documentation coming soon!
 
 
