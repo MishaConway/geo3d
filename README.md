@@ -167,6 +167,12 @@ Misc constructors
     Geo3d::Matrix.reflection reflection_plane  #returns a reflection matrix where reflection_plane is a Geo3d::Vector that corresponds to the normal of the plane
     Geo3d::Matrix.shadow light_position, plane  #returns a shadow matrix
 ```
+Matrix Decomposition
+```
+    matrix.scaling_component
+    matrix.translation_component
+    matrix.rotation_component
+```
 
 
 ## Quaternion
