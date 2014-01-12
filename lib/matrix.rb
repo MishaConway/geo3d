@@ -47,11 +47,11 @@ module Geo3d
     end
 
     def [] x, y
-      to_a[4*y + x]
+      to_a[4*x + y]
     end
 
     def []= x, y, v
-      send (%w{_11 _12 _13 _14 _21 _22 _23 _24 _31 _32 _33 _34 _41 _42 _43 _44}[4*y + x] + '=').to_sym, v
+      send (%w{_11 _12 _13 _14 _21 _22 _23 _24 _31 _32 _33 _34 _41 _42 _43 _44}[4*x + y] + '=').to_sym, v
     end
 
     def == m
@@ -228,6 +228,30 @@ module Geo3d
       self == self.class.identity
     end
 
+    def translation_component
+      Vector.new _41, _42, _43
+    end
+
+    def scaling_component
+      Vector.new Vector.new(_11, _12, _13).length, Vector.new(_21, _22, _23).length, Vector.new(_31, _32, _33).length
+    end
+
+    def rotation_component
+      scaling = scaling_component
+      return nil if scaling.x.zero? || scaling.y.zero? || scaling.z.zero?
+      m = Matrix.new
+      m._11=_11 / scaling.x
+      m._12=_12/scaling.x
+      m._13=_13/scaling.x
+      m._21=_21/scaling.y
+      m._22=_22/scaling.y
+      m._23=_23/scaling.y
+      m._31=_31/scaling.z
+      m._32=_32/scaling.z
+      m._33=_33/scaling.z
+      Quaternion.from_matrix m
+    end
+
     def self.identity
       identity_matrix = self.new
       identity_matrix._12 = identity_matrix._13 = identity_matrix._14 = 0
@@ -236,6 +260,10 @@ module Geo3d
       identity_matrix._41 = identity_matrix._42 = identity_matrix._43 = 0
       identity_matrix._11 = identity_matrix._22 = identity_matrix._33 = identity_matrix._44 = 1
       identity_matrix
+    end
+
+    def determinant
+      inverse(true).last
     end
 
     def inverse with_determinant = false

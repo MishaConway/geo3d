@@ -7,7 +7,10 @@ module Geo3d
     alias :d :w
 
     def initialize *args
-      @x, @y, @z, @w = 0, 0, 0, 0
+      @x = 0.0
+      @y = 0.0
+      @z = 0.0
+      @w = 0.0
       @x = args[0].to_f if args.size > 0
       @y = args[1].to_f if args.size > 1
       @z = args[2].to_f if args.size > 2
@@ -47,11 +50,11 @@ module Geo3d
     end
 
     def == vec
-      x == vec.x && y == vec.y && z == vec.z && w == vec.w
+      Geo3d::Utils.float_cmp(x, vec.x) && Geo3d::Utils.float_cmp(y, vec.y) && Geo3d::Utils.float_cmp(z, vec.z) && Geo3d::Utils.float_cmp(w, vec.w)
     end
 
     def != vec
-      x != vec.x || y != vec.y || z != vec.z || w != vec.w
+      !(self == vec)
     end
 
     def cross vec
