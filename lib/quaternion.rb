@@ -22,6 +22,14 @@ module Geo3d
       @w = v.to_f
     end
 
+    def == q
+      Geo3d::Utils.float_cmp(x, q.x) && Geo3d::Utils.float_cmp(y, q.y) && Geo3d::Utils.float_cmp(z, q.z) && Geo3d::Utils.float_cmp(w, q.w)
+    end
+
+    def != vec
+      !(self == vec)
+    end
+
     def self.from_axis rotation_axis, radians = 0
       normalized_rotation_axis = rotation_axis.normalize
       #const float radians = GeoConvertToRadians( degrees );
