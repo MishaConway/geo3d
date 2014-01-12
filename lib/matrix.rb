@@ -1,3 +1,5 @@
+require 'utils'
+
 module Geo3d
   class Matrix
     attr_accessor :_11, :_12, :_13, :_14
@@ -6,7 +8,22 @@ module Geo3d
     attr_accessor :_41, :_42, :_43, :_44
 
     def initialize *args
-      @_11 = 0, @_12 = 0, @_13 = 0, @_14 = 0, @_21 = 0, @_22 = 0, @_23 = 0, @_24 = 0, @_31 = 0, @_32 = 0, @_33 = 0, @_34 = 0, @_41 = 0, @_42 = 0, @_43 = 0, @_44 = 0
+      @_11 = 0
+      @_12 = 0
+      @_13 = 0
+      @_14 = 0
+      @_21 = 0
+      @_22 = 0
+      @_23 = 0
+      @_24 = 0
+      @_31 = 0
+      @_32 = 0
+      @_33 = 0
+      @_34 = 0
+      @_41 = 0
+      @_42 = 0
+      @_43 = 0
+      @_44 = 0
       @_11 = args[0] if args.size > 0
       @_12 = args[1] if args.size > 1
       @_13 = args[2] if args.size > 2
@@ -37,6 +54,19 @@ module Geo3d
       send (%w{_11 _12 _13 _14 _21 _22 _23 _24 _31 _32 _33 _34 _41 _42 _43 _44}[4*y + x] + '=').to_sym, v
     end
 
+    def == m
+      a = to_a
+      b = m.to_a
+      for i in 0..15
+        return false unless Geo3d::Utils.float_cmp a[i], b[i]
+      end
+      true
+    end
+
+    def != m
+      !(self == m)
+    end
+
     def +@
       self * 1
     end
@@ -46,7 +76,7 @@ module Geo3d
     end
 
     def + mat
-      sum = Matrix.new
+      sum = self.class.new
 
       sum._11 = _11 + mat._11
       sum._12 = _12 + mat._12
@@ -72,7 +102,7 @@ module Geo3d
     end
 
     def - mat
-      sum = Matrix.new
+      sum = self.class.new
 
       sum._11 = _11 - mat._11
       sum._12 = _12 - mat._12
@@ -98,9 +128,9 @@ module Geo3d
     end
 
     def * v
-      result = Matrix.new
+      result = self.class.new
 
-      if Matrix == v.class
+      if self.class == v.class
         matrix = v
 
         result._11 = _11 * matrix._11 + _12 * matrix._21 + _13 * matrix._31 + _14 * matrix._41
@@ -154,12 +184,12 @@ module Geo3d
     end
 
     def / v
-      if Matrix == v.class
+      if self.class == v.class
         self * v.inverse
       elsif Vector == v.class
         raise 'dividing matrices by vectors not currently supported'
       else
-        result = Matrix.new
+        result = self.class.new
         scalar = v
         result._11 = _11 / scalar
         result._12 = _12 / scalar
@@ -194,8 +224,12 @@ module Geo3d
       self * vec
     end
 
+    def identity?
+      self == self.class.identity
+    end
+
     def self.identity
-      identity_matrix = Matrix.new
+      identity_matrix = self.new
       identity_matrix._12 = identity_matrix._13 = identity_matrix._14 = 0
       identity_matrix._21 = identity_matrix._23 = identity_matrix._24 = 0
       identity_matrix._31 = identity_matrix._32 = identity_matrix._34 = 0
@@ -291,7 +325,7 @@ module Geo3d
         dst[j] *= det
       end
 
-      inverted_matrix = Matrix.new *dst
+      inverted_matrix = self.class.new *dst
 
       if with_determinant
         [inverted_matrix, det]
@@ -301,7 +335,7 @@ module Geo3d
     end
 
     def transpose
-      transposed_matrix = Matrix.new
+      transposed_matrix = self.class.new
       transposed_matrix._11 = _11
       transposed_matrix._12 = _21
       transposed_matrix._13 = _31
@@ -347,7 +381,7 @@ module Geo3d
       zf = zf.to_f
       y_scale = 1.0 / Math.tan(0.5*fovy)
       x_scale = y_scale / aspect
-      matrix = Matrix.new
+      matrix = self.new
       matrix._11 = x_scale
       matrix._22 = y_scale
       matrix._33 = zf/(zn - zf)
@@ -363,7 +397,7 @@ module Geo3d
       zf = zf.to_f
       y_scale = 1.0 / Math.tan(0.5*fovy)
       x_scale = y_scale / aspect
-      matrix = Matrix.new
+      matrix = self.new
       matrix._11 = x_scale
       matrix._22 = y_scale
       matrix._33 = zf/(zf - zn)
@@ -411,7 +445,7 @@ module Geo3d
       xaxis = up_direction.cross(zaxis).normalize
       yaxis = zaxis.cross xaxis
 
-      matrix = Matrix.new
+      matrix = self.new
 
       # set column one
       matrix._11 = xaxis.x
@@ -443,7 +477,7 @@ module Geo3d
       xaxis = up_direction.cross(zaxis).normalize
       yaxis = zaxis.cross xaxis
 
-      matrix = Matrix.new
+      matrix = self.new
 
       # set column one
       matrix._11 = xaxis.x
@@ -471,7 +505,7 @@ module Geo3d
     end
 
     def self.reflection reflection_plane
-      reflection_matrix = Matrix.new
+      reflection_matrix = self.new
 
       plane_magnitude = Vector.new(reflection_plane.x, reflection_plane.y, reflection_plane.z, 0).length
       normalized_plane = reflection_plane / plane_magnitude
@@ -508,7 +542,7 @@ module Geo3d
       normalized_plane = plane / norm
       dot = normalized_plane.dot(light_position)
 
-      m = Matrix.new
+      m = self.new
       m._11 = dot - normalized_plane.a * light_position.x
       m._12 = -normalized_plane.a * light_position.y
       m._13 = -normalized_plane.a * light_position.z
@@ -531,7 +565,7 @@ module Geo3d
 
 
     def self.translation x, y, z
-      translation_matrix = Matrix.new
+      translation_matrix = self.new
       translation_matrix._11 = translation_matrix._22 = translation_matrix._33 = translation_matrix._44 = 1
       #todo: consider simplifying with identity
       translation_matrix._41 = x
@@ -541,7 +575,7 @@ module Geo3d
     end
 
     def self.scaling x, y, z
-      scaling_matrix = Matrix.new
+      scaling_matrix = self.new
       scaling_matrix._11 = x
       scaling_matrix._22 = y
       scaling_matrix._33 = z
