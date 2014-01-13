@@ -179,23 +179,71 @@ Matrix Decomposition
 
 A mathematical construct to represent rotations in 3d space.
 
+Quaternions support all the basic math operations.
+
+Addition
+```
+    quat_a + quat_b
+```
+Subtraction
+```
+    quat_a - quat_b
+```
 Quaternion Multiplication
 ```
     quat_a * quat_b
 ```
+Scalar Multiplication
+```
+    quat * scalar
+```
+Scalar Division
+```
+    quat / scalar
+```
 Getting axis and angle
 ```
     quat.axis
-    quat.angle
+    quat.angle          #returns angle in radians
+    quat.angle_degrees  #returns angle in degrees
 ```
 Converting to a matrix
 ```
     quat.to_matrix
 ```
+
+Additional quaternion operations
+Magnitude
+```
+    quat.length
+```
+Squared Magnitude
+```
+    quat.length_squared
+```
+Normalize
+```
+    quat.normalize #returns a normalized version of the quaternion
+    quat.normalize! #normalizes the quaternion in place
+```
+Inverse
+```
+    quat.inverse #returns inverse of quaternion
+```
+Conjugate
+```
+    quat.conjugate
+```
+Dot product
+```
+    quat.dot
+```
+
 Constructors
 ```
     Geo3d::Quaternion.from_axis rotation_axis, radians  #returns a quaternion from an axis and angle
     Geo3d::Quaternion.from_matrix m  #returns a quaternion from a rotation matrix
+    Geo3d::Quaternion.identity  #returns the identity quaternion
 
 ```
 
