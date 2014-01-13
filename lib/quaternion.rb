@@ -134,7 +134,7 @@ module Geo3d
     end
 
     def to_matrix
-      v = Vector.new(x, y, z, w); ## Normalize();
+      v = normalize
       matrix = Matrix.identity
       matrix._11 = 1.0 - 2.0 * (v.y * v.y + v.z * v.z)
       matrix._12 = 2.0 * (v.x * v.y + v.z * v.w)
