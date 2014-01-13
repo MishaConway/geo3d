@@ -2,8 +2,15 @@ module Geo3d
   class Quaternion
     attr_reader :x, :y, :z, :w
 
-    def initialize
-      @x = @y = @z = @w = 0.0
+    def initialize *args
+      @x = 0.0
+      @y = 0.0
+      @z = 0.0
+      @w = 0.0
+      @x = args[0].to_f if args.size > 0
+      @y = args[1].to_f if args.size > 1
+      @z = args[2].to_f if args.size > 2
+      @w = args[3].to_f if args.size > 3
     end
 
     def x= v
@@ -20,6 +27,14 @@ module Geo3d
 
     def w= v
       @w = v.to_f
+    end
+
+    def +@
+      self.class.new x, y, z, w
+    end
+
+    def -@
+      self.class.new -x, -y, -z, -w
     end
 
     def == q
@@ -40,6 +55,10 @@ module Geo3d
       q.z = Math.sin(radians / 2.0) * normalized_rotation_axis.z
       q.w = Math.cos(radians / 2.0)
       q
+    end
+
+    def self.from_axis_degrees rotation_axis, degrees = 0
+      from_axis rotation_axis, Geo3d::Utils.to_radians(degrees)
     end
 
     def self.from_matrix pm
@@ -88,13 +107,30 @@ module Geo3d
       pout
     end
 
-    def * quat
-      out = Quat.new
-      out.w = w * quat.w - x * quat.x - y * quat.y - z * quat.z
-      out.x = w * quat.x + x * quat.w + y * quat.z - z * quat.y
-      out.y = w * quat.y - x * quat.z + y * quat.w + z * quat.x
-      out.z = w * quat.z + x * quat.y - y * quat.x + z * quat.w
-      out
+    def + quat
+      self.class.new x + quat.x, y + quat.y, z + quat.z, w + quat.w
+    end
+
+    def - quat
+      self.class.new x - quat.x, y - quat.y, z - quat.z, w - quat.w
+    end
+
+    def * v
+      if Quaternion == v.class
+        quat = v
+        out = self.class.new
+        out.w = w * quat.w - x * quat.x - y * quat.y - z * quat.z
+        out.x = w * quat.x + x * quat.w + y * quat.z - z * quat.y
+        out.y = w * quat.y - x * quat.z + y * quat.w + z * quat.x
+        out.z = w * quat.z + x * quat.y - y * quat.x + z * quat.w
+        out
+      else
+        self.class.new x*v, y*v, z*v, w*v
+      end
+    end
+
+    def / v
+      self.class.new x/v, y/v, z/v, w/v
     end
 
     def to_matrix
@@ -113,15 +149,70 @@ module Geo3d
     end
 
     def axis
+      q = normalize
       v = Vector.new
-      v.x = x / Math.sqrt(1-w*w)
-      v.y = y / Math.sqrt(1-w*w)
-      v.z = z / Math.sqrt(1-w*w)
+      v.x = q.x / Math.sqrt(1-q.w*q.w)
+      v.y = q.y / Math.sqrt(1-q.w*q.w)
+      v.z = q.z / Math.sqrt(1-q.w*q.w)
       v
     end
 
     def angle
-      Math.acos(w) * 2.0
+      q = normalize
+      Math.acos(q.w) * 2.0
+    end
+
+    def angle_degrees
+      Geo3d::Utils.to_degrees angle
+    end
+
+    def length_squared
+      dot self
+    end
+
+    def length
+      Math.sqrt length_squared
+    end
+
+    def dot quat
+      x * quat.x + y * quat.y + z * quat.z + w * quat.w
+    end
+
+    def normalize!
+      len = length
+      if length > 0
+        @x /= len
+        @y /= len
+        @z /= len
+        @w /= len
+      end
+    end
+
+    def normalize
+      q = self.class.new x, y, z, w
+      q.normalize!
+      q
+    end
+
+    def conjugate
+      self.class.new -x, -y, -z, w
+    end
+
+    def inverse
+      norm = length_squared
+      if norm.zero?
+        self.class.new 0, 0, 0, 0
+      else
+        conjugate / norm
+      end
+    end
+
+    def identity?
+      self == self.class.identity
+    end
+
+    def self.identity
+      self.new 0, 0, 0, 1
     end
   end
 end
