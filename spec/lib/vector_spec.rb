@@ -21,15 +21,36 @@ describe Geo3d::Vector do
   end
 
   it "should support cross products with other vectors" do
-
+    [{:a => [1,0,0,0], :b => [0,1,0,0], :expected => [0,0,1,0] },
+     {:a => [1,0,0,1], :b => [0,1,0,1], :expected => [0,0,1,0] },
+     {:a => [1,1,1,1], :b => [1,1,1,1], :expected => [0,0,0,0] },
+     {:a => [2,99,6,0], :b => [-11,-91,77,0], :expected => [8169.000000, -220.000000, 907.000000, 0.000000] }].each do |data|
+      a = Geo3d::Vector.new *data[:a]
+      b = Geo3d::Vector.new *data[:b]
+      expected = Geo3d::Vector.new *data[:expected]
+      a.cross(b).should == expected
+      b.cross(a).should == -expected
+    end
   end
 
   it "should return length" do
-
+    [{:vector => [0, 0, -1, 3], :expected => 3.162278},
+     {:vector => [11, 11, -7, 3], :expected => 17.320509},
+     {:vector => [-56, 23, 923, 9], :expected => 925.027039}].each do |data|
+      vector = Geo3d::Vector.new *data[:vector]
+      expected = data[:expected]
+      Geo3d::Utils.float_cmp(vector.length, expected).should == true
+    end
   end
 
   it "should return length squared" do
-
+    [{:vector => [0, 0, -1, 3], :expected => 10},
+     {:vector => [11, 11, -7, 3], :expected => 300},
+     {:vector => [-56, 23, 923, 9], :expected => 855675}].each do |data|
+      vector = Geo3d::Vector.new *data[:vector]
+      expected = data[:expected]
+      Geo3d::Utils.float_cmp(vector.length_squared, expected).should == true
+    end
   end
 
   it "should be normalizable" do
@@ -43,7 +64,14 @@ describe Geo3d::Vector do
   end
 
   it "should be able to linearly interpolate" do
-
+    [{:a => [0,0,0,0], :b => [1,1,1,1], :interpolate_fraction => 0.5, :expected => [0.5, 0.5, 0.5, 0.5]},
+     {:a => [23,-3,425,-332], :b => [-22,-45443,886,122], :interpolate_fraction => 0.21234433, :expected => [13.444505, -9651.926758, 522.890747, -235.595673]}].each do |data|
+      a = Geo3d::Vector.new *data[:a]
+      b = Geo3d::Vector.new *data[:b]
+      expected = Geo3d::Vector.new *data[:expected]
+      s = data[:interpolate_fraction]
+      a.lerp( b, s).should == expected
+    end
   end
 
 end
