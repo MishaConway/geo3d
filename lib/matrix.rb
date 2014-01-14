@@ -54,6 +54,32 @@ module Geo3d
       send (%w{_11 _12 _13 _14 _21 _22 _23 _24 _31 _32 _33 _34 _41 _42 _43 _44}[4*x + y] + '=').to_sym, v
     end
 
+    def row i
+      if i >= 0 && i <= 3
+        Vector.new self[0, i], self[1, i], self[2, i], self[3, i]
+      end
+    end
+
+    def col i
+      if i >= 0 && i <= 3
+        Vector.new self[i, 0], self[i, 1], self [i, 2], self[i, 3]
+      end
+    end
+
+    def set_row i, v
+      self[0, i] = v.x
+      self[1, i] = v.y
+      self[2, i] = v.z
+      self[3, i] = v.w
+    end
+
+    def set_col i, v
+      self[i, 0] = v.x
+      self[i, 1] = v.y
+      self[i, 2] = v.z
+      self[i, 3] = v.w
+    end
+
     def == m
       a = to_a
       b = m.to_a
