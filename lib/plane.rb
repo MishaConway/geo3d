@@ -16,12 +16,21 @@ module Geo3d
     def self.from_points pv1, pv2, pv3
       edge1 = pv2 - pv1
       edge2 = pv3 - pv1
-      from_point_and_normal pv1, edge1.cross(edge2)
+      from_point_and_normal pv1, edge1.cross(edge2).normalize
     end
 
     def self.from_point_and_normal point, normal
-      self.new normal.x, normal.y, normal.z, point.dot(normal.normalize)
+      point.w = 0
+      self.new normal.x, normal.y, normal.z, -point.dot(normal)
     end
+
+    def == p
+       Geo3d::Utils.float_cmp(a, p.a) && Geo3d::Utils.float_cmp(b, p.b) && Geo3d::Utils.float_cmp(c, p.c) && Geo3d::Utils.float_cmp(d, p.d)
+     end
+
+     def != vec
+       !(self == vec)
+     end
 
     def dot v
       a * v.x + b * v.y + c * v.z + d * v.w
@@ -43,7 +52,7 @@ module Geo3d
     end
 
     def normalize
-      p = self.class.new x, y, z, w
+      p = self.class.new a, b, c, d
       p.normalize!
       p
     end
@@ -61,12 +70,12 @@ module Geo3d
         nil
       else
         temp = (d + normal.dot(line_start)) / normal_dot_direction
-        line_start - temp * direction
+        line_start - direction * temp
       end
     end
 
     def transform matrix, use_inverse_transpose = true
-      matrix = matrix.inverse.tranpose if use_inverse_transpose
+      matrix = matrix.inverse.transpose if use_inverse_transpose
       p = self.class.new
       p.a = dot matrix.row(0)
       p.b = dot matrix.row(1)

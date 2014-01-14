@@ -181,10 +181,10 @@ module Geo3d
       elsif Vector == v.class
         vec = v
         transformed_vector = Vector.new
-        transformed_vector.x = _11 * vec.x + _21 * vec.y + _31 * vec.z + _41
-        transformed_vector.y = _12 * vec.x + _22 * vec.y + _32 * vec.z + _42
-        transformed_vector.z = _13 * vec.x + _23 * vec.y + _33 * vec.z + _43
-        transformed_vector.w = _14 * vec.x + _24 * vec.y + _34 * vec.z + _44
+        transformed_vector.x = _11 * vec.x + _21 * vec.y + _31 * vec.z + _41 * vec.w
+        transformed_vector.y = _12 * vec.x + _22 * vec.y + _32 * vec.z + _42 * vec.w
+        transformed_vector.z = _13 * vec.x + _23 * vec.y + _33 * vec.z + _43 * vec.w
+        transformed_vector.w = _14 * vec.x + _24 * vec.y + _34 * vec.z + _44 * vec.w
         return transformed_vector
       else
         scalar = v
@@ -238,12 +238,7 @@ module Geo3d
     end
 
     def transform_coord vec
-      norm =_14 * vec.x + _24 * vec.y + _34 * vec.z + _44
-      transformed_vector = self * vec
-      transformed_vector.x /= norm
-      transformed_vector.y /= norm
-      transformed_vector.z /= norm
-      transformed_vector
+      self * Vector.new( vec.x, vec.y, vec.z, 1.0 )
     end
 
     def transform vec
@@ -426,6 +421,10 @@ module Geo3d
       puts "_42: #{_42}\n"
       puts "_43: #{_43}\n"
       puts "_44: #{_44}\n"
+    end
+
+    def to_s
+      (0..3).to_a.map{ |i| row(i).to_s}.join "\n"
     end
 
     def self.perspective_fov_rh fovy, aspect, zn, zf
