@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo3d::Plane do
+describe Geo3d::Matrix do
   def random_matrix
     r = Geo3d::Matrix.new
     for i in 0..3
@@ -45,7 +45,12 @@ describe Geo3d::Plane do
   end
 
   it "should return the determinant" do
-
+    [{:matrix => [0.321046, 0.000000, 0.000000, 0.000000, 0.000000, 0.642093, 0.000000, 0.000000, 0.000000, 0.000000, -1.000095, -1.000000, 0.000000, 0.000000, -2.000190, 0.000000], :expected => -0.412322},
+     {:matrix => [1.000000, 0.000000, 0.000000, 0.000000, 0.000000, -1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, -2.000000, 0.000000, 1.000000], :expected => -1},
+     {:matrix => [-0.392804, -0.878379, -0.272314, 0.000000, 0.000000, 0.296115, -0.955152, 0.000000, 0.919622, -0.375187, -0.116315, 0.000000, -2.366064, 1.411711, 2.531564, 1.000000], :expected => 1}].each do |data|
+      data[:matrix].size.should == 16
+      Geo3d::Utils.float_cmp( Geo3d::Matrix.new(*data[:matrix]).determinant, data[:expected] ).should == true
+    end
   end
 
   it "should be transposable" do
@@ -117,11 +122,31 @@ describe Geo3d::Plane do
   end
 
   it "should have a translation constructor" do
-
+    10.times do
+      random_translation = random_vector
+      matrix = Geo3d::Matrix.translation random_translation.x, random_translation.y, random_translation.z
+      10.times do
+        random_vec = random_vector.one_w
+        Geo3d::Utils.float_cmp((matrix * random_vec).x, random_vec.x + random_translation.x).should == true
+        Geo3d::Utils.float_cmp((matrix * random_vec).y, random_vec.y + random_translation.y).should == true
+        Geo3d::Utils.float_cmp((matrix * random_vec).z, random_vec.z + random_translation.z).should == true
+        Geo3d::Utils.float_cmp((matrix * random_vec).w, 1).should == true
+      end
+    end
   end
 
   it "should have a scaling constructor" do
-
+    10.times do
+      random_scaling = random_vector
+      matrix = Geo3d::Matrix.scaling random_scaling.x, random_scaling.y, random_scaling.z
+      10.times do
+        random_vec = random_vector.one_w
+        Geo3d::Utils.float_cmp((matrix * random_vec).x, random_vec.x * random_scaling.x).should == true
+        Geo3d::Utils.float_cmp((matrix * random_vec).y, random_vec.y * random_scaling.y).should == true
+        Geo3d::Utils.float_cmp((matrix * random_vec).z, random_vec.z * random_scaling.z).should == true
+        Geo3d::Utils.float_cmp((matrix * random_vec).w, 1).should == true
+      end
+    end
   end
 
 
@@ -165,8 +190,8 @@ describe Geo3d::Plane do
   end
 
   it "should have a reflection constructor" do
-    [{:plane => [0, 1, 0, 0], :expected => [1.000000,0.000000,0.000000,0.000000,0.000000,-1.000000,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,0.000000,0.000000,0.000000,1.000000]},
-     {:plane => [0, 1, 0, 1], :expected => [1.000000,0.000000,0.000000,0.000000,0.000000,-1.000000,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,0.000000,-2.000000,0.000000,1.000000]}].each do |data|
+    [{:plane => [0, 1, 0, 0], :expected => [1.000000, 0.000000, 0.000000, 0.000000, 0.000000, -1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000]},
+     {:plane => [0, 1, 0, 1], :expected => [1.000000, 0.000000, 0.000000, 0.000000, 0.000000, -1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, -2.000000, 0.000000, 1.000000]}].each do |data|
       matrix = Geo3d::Matrix.reflection Geo3d::Plane.new(*data[:plane])
       data[:expected].size.should == 16
       expected = Geo3d::Matrix.new *data[:expected]
@@ -175,17 +200,12 @@ describe Geo3d::Plane do
   end
 
   it "should have a shadow constructor" do
-    [{:plane => [0, 1, 0, 1], :light_pos => [0, 700, 0, 1], :expected => [701.000000,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,-1.000000,0.000000,0.000000,701.000000,0.000000,0.000000,-700.000000,0.000000,700.000000]}].each do |data|
+    [{:plane => [0, 1, 0, 1], :light_pos => [0, 700, 0, 1], :expected => [701.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 0.000000, 701.000000, 0.000000, 0.000000, -700.000000, 0.000000, 700.000000]}].each do |data|
       matrix = Geo3d::Matrix.shadow Geo3d::Vector.new(*data[:light_pos]), Geo3d::Plane.new(*data[:plane])
       data[:expected].size.should == 16
       expected = Geo3d::Matrix.new *data[:expected]
       matrix.should == expected
     end
-  end
-
-
-  it "should transform vectors" do
-
   end
 
   it "multiplying a matrix by the identity matrix should result in the same matrix" do
@@ -195,6 +215,10 @@ describe Geo3d::Plane do
       (r * identity).should == r
       (identity * r).should == r
     end
+  end
+
+  it "should transform vectors" do
+
   end
 
   it "should multiply with other matrices" do

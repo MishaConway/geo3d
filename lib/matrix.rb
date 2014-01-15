@@ -369,9 +369,9 @@ module Geo3d
 
 
       # calculate matrix inverse
-      det = 1.0/det
+      inverse_det = 1.0/det
       for j in 0..15
-        dst[j] *= det
+        dst[j] *= inverse_det
       end
 
       inverted_matrix = self.class.new *dst
