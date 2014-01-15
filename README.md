@@ -202,7 +202,7 @@ Line intersection
 ````
 Plane Transformation
 ````
-    #transforms plane by the matrix, if use_inverse_transpose is set to true, the plane will be transformed by the inverse tranpose of matrix
+    #transforms plane by the matrix, if use_inverse_transpose is set to true, the plane will be transformed by the inverse transpose of matrix
     plane.transform matrix, use_inverse_transpose = true
 ````
 
