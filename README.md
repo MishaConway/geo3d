@@ -119,10 +119,11 @@ Inverse
 ```
     mat.inverse #returns inverse of matrix
     mat.inverse true  #returns inverse of matrix along with its determinant
+    mat.determinant #returns the determinant
 ```
 Transpose
 ```
-    mat.tranpose
+    mat.transpose
 ```
 
 Common matrix constructors
@@ -173,6 +174,37 @@ Matrix Decomposition
     matrix.translation_component
     matrix.rotation_component
 ```
+
+## Plane
+
+Represents a 2d surface in three dimensional space. Has the attributes a,b,c,d that mirror the standard plane equations.
+
+There are a couple constructors to build planes from points and normals.
+````
+Geo3d::Plane.from_points pv1, pv2, pv3  #builds a plane from known points on the plane
+Geo3d::Plane.from_point_and_normal point, normal  #builds a plane from it's normal and a known point
+````
+
+Additional plane operations
+
+Dot product
+```
+    plane.dot v  #v can be a vector or another plane
+```
+Normalize
+```
+    plane.normalize #returns a normalized version of the plane
+    plane.normalize! #normalizes the plane in place
+```
+Line intersection
+```
+    plane.line_intersection line_start, line_end  #returns the intersection of the line onto the plane
+````
+Plane Transformation
+````
+    #transforms plane by the matrix, if use_inverse_transpose is set to true, the plane will be transformed by the inverse tranpose of matrix
+    plane.transform matrix, use_inverse_transpose = true
+````
 
 
 ## Quaternion
