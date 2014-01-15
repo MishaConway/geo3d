@@ -558,6 +558,7 @@ module Geo3d
     end
 
     def self.reflection reflection_plane
+      reflection_plane = Geo3d::Vector.new *reflection_plane.to_a
       reflection_matrix = self.new
 
       plane_magnitude = Vector.new(reflection_plane.x, reflection_plane.y, reflection_plane.z, 0).length
@@ -591,6 +592,7 @@ module Geo3d
     end
 
     def self.shadow light_position, plane
+      plane = Geo3d::Vector.new *plane.to_a
       norm = plane.x * plane.x + plane.y * plane.y + plane.z * plane.z
       normalized_plane = plane / norm
       dot = normalized_plane.dot(light_position)

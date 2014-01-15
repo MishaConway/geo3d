@@ -1,6 +1,10 @@
 module Geo3d
   class Plane
     attr_accessor :a, :b, :c, :d
+    alias :x :a
+    alias :y :b
+    alias :z :c
+    alias :w :d
 
     def initialize *args
       @a = 0.0
@@ -22,6 +26,10 @@ module Geo3d
     def self.from_point_and_normal point, normal
       point.w = 0
       self.new normal.x, normal.y, normal.z, -point.dot(normal)
+    end
+
+    def to_a
+      [a,b,c,d]
     end
 
     def == p

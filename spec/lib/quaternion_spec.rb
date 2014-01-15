@@ -23,7 +23,7 @@ describe Geo3d::Quaternion do
     Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x 1).should == Geo3d::Quaternion.new(0.479426, 0.000000, -0.000000, 0.877583)
     Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_y 1).should == Geo3d::Quaternion.new(-0.000000, 0.479426, -0.000000, 0.877583)
     Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_z 1).should == Geo3d::Quaternion.new(-0.000000, 0.000000, 0.479426, 0.877583)
-    #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x 3.2).should == Geo3d::Quaternion.new(0.999574, 0.000000, 0.000000, -0.029200)
+    Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x 3.2).should == Geo3d::Quaternion.new(0.999574, 0.000000, 0.000000, -0.029200)
   end
 
   it "should be able to construct as the identity quaternion" do
@@ -39,7 +39,7 @@ describe Geo3d::Quaternion do
   it "should return axis of rotation" do
     for i in 0..10000
       angle = 0.1 * i + 0.1
-      puts "angle is #{angle}"
+     # puts "angle is #{angle}"
       #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x angle).axis.should == Geo3d::Vector.new(1, 0, 0)
       #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_y angle).axis.should == Geo3d::Vector.new(0, 1, 0)
       #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_z angle).axis.should == Geo3d::Vector.new(0, 0, 1)
