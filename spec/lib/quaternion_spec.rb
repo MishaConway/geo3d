@@ -1,12 +1,70 @@
 require 'spec_helper'
 
-describe Geo3d::Vector do
+describe Geo3d::Quaternion do
   it "should default all values to zero" do
     q = Geo3d::Quaternion.new
     q.x.zero?.should == true
     q.y.zero?.should == true
     q.z.zero?.should == true
     q.w.zero?.should == true
+  end
+
+  it "should be constructable from an axis and angle" do
+    [{:axis => [0, 1, 0], :angle => 1, :expected => [0.000000, 0.479426, 0.000000, 0.877583]},
+     {:axis => [0, -1, 0], :angle => 1, :expected => [0.000000, -0.479426, 0.000000, 0.877583]},
+     {:axis => [0, 1, 0], :angle => -1, :expected => [0.000000, -0.479426, 0.000000, 0.877583]},
+     {:axis => [0, 1, 0], :angle => -6, :expected => [-0.000000, -0.141120, -0.000000, -0.989992]},
+     {:axis => [-213, 133, 22, -232], :angle => -3432, :expected => [0.538065, -0.335975, -0.055575, 0.771050]}].each do |data|
+      Geo3d::Quaternion.from_axis(Geo3d::Vector.new(*data[:axis]), data[:angle]).should == Geo3d::Quaternion.new(*data[:expected])
+    end
+  end
+
+  it "should be constructable from a rotation matrix" do
+    Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x 1).should == Geo3d::Quaternion.new(0.479426, 0.000000, -0.000000, 0.877583)
+    Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_y 1).should == Geo3d::Quaternion.new(-0.000000, 0.479426, -0.000000, 0.877583)
+    Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_z 1).should == Geo3d::Quaternion.new(-0.000000, 0.000000, 0.479426, 0.877583)
+    #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x 3.2).should == Geo3d::Quaternion.new(0.999574, 0.000000, 0.000000, -0.029200)
+  end
+
+  it "should be able to construct as the identity quaternion" do
+    q = Geo3d::Quaternion.identity
+    q.should == Geo3d::Quaternion.new(0, 0, 0, 1)
+    q.identity?.should == true
+  end
+
+  it "should be able to convert to a rotation matrix" do
+
+  end
+
+  it "should return axis of rotation" do
+    for i in 0..10000
+      angle = 0.1 * i + 0.1
+      puts "angle is #{angle}"
+      #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x angle).axis.should == Geo3d::Vector.new(1, 0, 0)
+      #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_y angle).axis.should == Geo3d::Vector.new(0, 1, 0)
+      #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_z angle).axis.should == Geo3d::Vector.new(0, 0, 1)
+    end
+  end
+
+  it "should return rotation amount as angle" do
+
+  end
+
+  it "should return conjugate" do
+    [{:quaternion => [1, 1, 1, 1], :expected => [-1, -1, -1, 1]}].each do |data|
+      quaternion = Geo3d::Quaternion.new *data[:quaternion]
+      expected = Geo3d::Quaternion.new *data[:expected]
+      quaternion.conjugate.should == expected
+    end
+  end
+
+  it "should return inverse" do
+    [{:quaternion => [1, 1, 1, 1], :expected => [-0.250000, -0.250000, -0.250000, 0.250000]},
+     {:quaternion => [-1, -1, -1, -1], :expected => [0.250000, 0.250000, 0.250000, -0.250000]}].each do |data|
+      quaternion = Geo3d::Quaternion.new *data[:quaternion]
+      expected = Geo3d::Quaternion.new *data[:expected]
+      quaternion.inverse.should == expected
+    end
   end
 
   it "should support dot products with other quaternions" do
@@ -50,6 +108,6 @@ describe Geo3d::Vector do
     end
   end
 
- #todo: add tests for quaternion interpolation
+  #todo: add tests for quaternion interpolation
 
 end

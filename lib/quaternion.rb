@@ -46,9 +46,7 @@ module Geo3d
     end
 
     def self.from_axis rotation_axis, radians = 0
-      normalized_rotation_axis = rotation_axis.normalize
-      #const float radians = GeoConvertToRadians( degrees );
-
+      normalized_rotation_axis = rotation_axis.zero_w.normalize
       q = self.new
       q.x = Math.sin(radians / 2.0) * normalized_rotation_axis.x
       q.y = Math.sin(radians / 2.0) * normalized_rotation_axis.y
@@ -70,6 +68,8 @@ module Geo3d
         pout.y = (pm._31 - pm._13) / (2.0 * Math.sqrt(trace))
         pout.z = (pm._12- pm._21) / (2.0 * Math.sqrt(trace))
         pout.w = Math.sqrt(trace) / 2.0
+        puts "a and pout is #{pout.inspect}"
+
         return pout
       end
       maxi = 0
@@ -104,6 +104,7 @@ module Geo3d
           pout.z = 0.25 * s
           pout.w = (pm._12 - pm._21) / s
       end
+      puts "b"
       pout
     end
 

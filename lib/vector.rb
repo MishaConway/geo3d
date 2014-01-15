@@ -17,6 +17,14 @@ module Geo3d
       @w = args[3].to_f if args.size > 3
     end
 
+    def zero_w
+      self.class.new x, y, z, 0
+    end
+
+    def one_w
+      self.class.new x, y, z, 1
+    end
+
     def to_s
       to_a.compact.join ' '
     end
