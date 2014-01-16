@@ -18,12 +18,12 @@ Or install it yourself as:
 
 ## Usage
 ```
-a = Geo3d::Vector.new 1, 0, 0
-b = Geo3d::Vector.new 0, 1, 0
+a = Geo3d::Vector.point 1, 0, 0
+b = Geo3d::Vector.point 0, 1, 0
 sum = a + b # add them together
 sum *= 2 #double the vector
 
-m = Geo3d::Matrix.translation 0, 5, 0 #create a translation matrix that transforms a points 5 units on the y-axis
+m = Geo3d::Matrix.translation 0, 5, 0, #create a translation matrix that transforms a points 5 units on the y-axis
 sum = m * sum #apply the transform to our vector
 ```
 
@@ -31,6 +31,15 @@ sum = m * sum #apply the transform to our vector
 ## Vector
 
 Describes a three dimensional point or direction. A vector has the following read/write attributes: x, y, z, w
+
+Constructors
+```
+    a = Geo3d::Vector.new #all attributes are initialized to zero
+    b = Geo3d::Vector.new x,y,z,w  #initialize all attributes directly
+    c = Geo3d::Vector.new x,y,z   #initialize x,y, and z directly and default w to zero
+    d = Geo3d::Vector.point x,y,z  #initialize x,y, and z directly and default w to one
+    e = Geo3d::Vector.direction x,y,z  #initialize x,y, and z directly and default w to zero
+```
 
 Vectors are overloaded with all of the basic math operations.
 

@@ -17,12 +17,24 @@ module Geo3d
       @w = args[3].to_f if args.size > 3
     end
 
+    def self.point *args
+      self.new(*args).one_w
+    end
+
+    def self.direction *args
+      self.new(*args).zero_w
+    end
+
     def zero_w
       self.class.new x, y, z, 0
     end
 
     def one_w
       self.class.new x, y, z, 1
+    end
+
+    def xyz
+      self.class.new x, y, z
     end
 
     def to_s
@@ -42,19 +54,19 @@ module Geo3d
     end
 
     def + vec
-      self.class.new x + vec.x, y + vec.y, z + vec.z, w + vec.w
+      self.class.new x + vec.x, y + vec.y, z + vec.z, w
     end
 
     def - vec
-      self.class.new x - vec.x, y - vec.y, z - vec.z, w - vec.w
+      self.class.new x - vec.x, y - vec.y, z - vec.z, w
     end
 
     def * scalar
-      self.class.new x * scalar, y * scalar, z * scalar, w * scalar
+      self.class.new x * scalar, y * scalar, z * scalar, w
     end
 
     def / scalar
-      self.class.new x / scalar, y / scalar, z / scalar, w / scalar
+      self.class.new x / scalar, y / scalar, z / scalar, w
     end
 
     def == vec
@@ -98,7 +110,10 @@ module Geo3d
     end
 
     def lerp vec, s
-      self + ( vec - self )*s;
+      l = self + (vec - self)*s
+      l.w = w + (vec.w - w)*s
+      l
     end
   end
 end
+
