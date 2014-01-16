@@ -11,5 +11,18 @@ module Geo3d
     def self.to_radians degrees
       degrees * Math::PI / 180.0
     end
+
+    def self.normalize_angle radians
+      if radians.abs > Math::PI * 2.0
+        absolute = radians.abs % (Math::PI * 2.0 )
+        if radians < 0
+          -absolute
+        else
+          absolute
+        end
+      else
+        radians
+      end
+    end
   end
 end

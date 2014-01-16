@@ -13,6 +13,10 @@ module Geo3d
       @w = args[3].to_f if args.size > 3
     end
 
+    def to_a
+      [x,y,z,w]
+    end
+
     def x= v
       @x = v.to_f
     end
@@ -46,6 +50,7 @@ module Geo3d
     end
 
     def self.from_axis rotation_axis, radians = 0
+      radians = Geo3d::Utils.normalize_angle radians  #todo: is this cheating?....
       normalized_rotation_axis = rotation_axis.zero_w.normalize
       q = self.new
       q.x = Math.sin(radians / 2.0) * normalized_rotation_axis.x
@@ -62,13 +67,14 @@ module Geo3d
     def self.from_matrix pm
       pout = self.new
 
-      trace = pm._11 + pm._22 + pm._33 + 1.0
-      if trace > 0
-        pout.x = (pm._23 - pm._32) / (2.0 * Math.sqrt(trace))
-        pout.y = (pm._31 - pm._13) / (2.0 * Math.sqrt(trace))
-        pout.z = (pm._12- pm._21) / (2.0 * Math.sqrt(trace))
-        pout.w = Math.sqrt(trace) / 2.0
-        puts "a and pout is #{pout.inspect}"
+      #puts "trace is #{pm.trace}"
+      if false && pm.trace > 1.0
+        sq_root_of_trace = Math.sqrt pm.trace
+        pout.x = (pm._23 - pm._32) / (2.0 * sq_root_of_trace)
+        pout.y = (pm._31 - pm._13) / (2.0 * sq_root_of_trace)
+        pout.z = (pm._12- pm._21) / (2.0 * sq_root_of_trace)
+        pout.w = sq_root_of_trace / 2.0
+        #puts "a and pout is #{pout.inspect}"
 
         return pout
       end
@@ -104,7 +110,7 @@ module Geo3d
           pout.z = 0.25 * s
           pout.w = (pm._12 - pm._21) / s
       end
-      puts "b"
+      #puts "b"
       pout
     end
 
@@ -150,17 +156,11 @@ module Geo3d
     end
 
     def axis
-      q = normalize
-      v = Vector.new
-      v.x = q.x / Math.sqrt(1-q.w*q.w)
-      v.y = q.y / Math.sqrt(1-q.w*q.w)
-      v.z = q.z / Math.sqrt(1-q.w*q.w)
-      v
+      Vector.new( *(normalize / Math.sin( angle / 2.0 )).to_a ).zero_w
     end
 
     def angle
-      q = normalize
-      Math.acos(q.w) * 2.0
+      Math.acos(normalize.w) * 2.0
     end
 
     def angle_degrees

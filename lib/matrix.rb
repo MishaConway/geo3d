@@ -287,6 +287,18 @@ module Geo3d
       inverse(true).last
     end
 
+    def trace
+      _11 + _22 + _33 + _44
+    end
+
+    def orthogonal?
+      inverse == transpose
+    end
+
+    def is_rotation_transform?
+      orthogonal? && Geo3d::Utils.float_cmp(determinant, 1.0)
+    end
+
     def inverse with_determinant = false
       mat = to_a
       dst = Array.new 16

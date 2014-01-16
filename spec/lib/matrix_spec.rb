@@ -26,15 +26,21 @@ describe Geo3d::Matrix do
   end
 
   it "should be able to extract translation component" do
-
+    translation = Geo3d::Vector.new 3,-4,6
+    matrix = Geo3d::Matrix.translation translation.x, translation.y, translation.z
+    matrix.translation_component.should == translation
   end
 
   it "should be able to extract scaling component" do
-
+    scaling = Geo3d::Vector.new 3,4,6
+    matrix = Geo3d::Matrix.scaling scaling.x, scaling.y, scaling.z
+    matrix.scaling_component.should == scaling
   end
 
   it "should be able to extract rotation component" do
-
+    angle = 2.234
+    matrix = Geo3d::Matrix.rotation_z angle
+    matrix.rotation_component.should == Geo3d::Quaternion.from_axis(Geo3d::Vector.new(0,0,1), angle)
   end
 
   it "should be invertible" do
@@ -157,6 +163,8 @@ describe Geo3d::Matrix do
       data[:expected].size.should == 16
       expected = Geo3d::Matrix.new *data[:expected]
       matrix.should == expected
+      matrix.is_rotation_transform?.should == true
+      expected.is_rotation_transform?.should == true
     end
   end
 
@@ -167,6 +175,8 @@ describe Geo3d::Matrix do
       data[:expected].size.should == 16
       expected = Geo3d::Matrix.new *data[:expected]
       matrix.should == expected
+      matrix.is_rotation_transform?.should == true
+      expected.is_rotation_transform?.should == true
     end
   end
 
@@ -177,6 +187,8 @@ describe Geo3d::Matrix do
       data[:expected].size.should == 16
       expected = Geo3d::Matrix.new *data[:expected]
       matrix.should == expected
+      matrix.is_rotation_transform?.should == true
+      expected.is_rotation_transform?.should == true
     end
   end
 
@@ -186,6 +198,8 @@ describe Geo3d::Matrix do
       data[:expected].size.should == 16
       expected = Geo3d::Matrix.new *data[:expected]
       matrix.should == expected
+      matrix.is_rotation_transform?.should == true
+      expected.is_rotation_transform?.should == true
     end
   end
 

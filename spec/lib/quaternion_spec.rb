@@ -33,21 +33,32 @@ describe Geo3d::Quaternion do
   end
 
   it "should be able to convert to a rotation matrix" do
-
-  end
-
-  it "should return axis of rotation" do
-    for i in 0..10000
-      angle = 0.1 * i + 0.1
-     # puts "angle is #{angle}"
-      #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x angle).axis.should == Geo3d::Vector.new(1, 0, 0)
-      #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_y angle).axis.should == Geo3d::Vector.new(0, 1, 0)
-      #Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_z angle).axis.should == Geo3d::Vector.new(0, 0, 1)
+    [{:quaternion => [0.0, 0.7071067811865475, 0.0, 0.7071067811865475], :expected => [0.000000, 0.000000, -1.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000]}].each do |data|
+      quaternion = Geo3d::Quaternion.new *data[:quaternion]
+      data[:expected].size.should == 16
+      expected = Geo3d::Matrix.new *data[:expected]
+      quaternion.to_matrix.should == expected
     end
   end
 
-  it "should return rotation amount as angle" do
+  it "should return axis and angle of rotation" do
+    for i in 0..10000
+      angle = 0.1 * i + 0.1
+      normalized_angle = Geo3d::Utils.normalize_angle angle
 
+      Geo3d::Quaternion.from_axis(Geo3d::Vector.new(1, 0, 0), angle).axis.should == Geo3d::Vector.new(1, 0, 0)
+      Geo3d::Quaternion.from_axis(Geo3d::Vector.new(0, 1, 0), angle).axis.should == Geo3d::Vector.new(0, 1, 0)
+      Geo3d::Quaternion.from_axis(Geo3d::Vector.new(0, 0, 1), angle).axis.should == Geo3d::Vector.new(0, 0, 1)
+
+
+      Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x angle).axis.should == Geo3d::Vector.new(1, 0, 0)
+      Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_y angle).axis.should == Geo3d::Vector.new(0, 1, 0)
+      Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_z angle).axis.should == Geo3d::Vector.new(0, 0, 1)
+
+      Geo3d::Utils.float_cmp(Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_x angle).angle, normalized_angle).should == true
+      Geo3d::Utils.float_cmp(Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_y angle).angle, normalized_angle).should == true
+      Geo3d::Utils.float_cmp(Geo3d::Quaternion.from_matrix(Geo3d::Matrix.rotation_z angle).angle, normalized_angle).should == true
+    end
   end
 
   it "should return conjugate" do
@@ -107,6 +118,33 @@ describe Geo3d::Quaternion do
       quaternion.should == expected
     end
   end
+
+
+  it "multiplying two quaternions with same axis should result in a quaternion with the same axis and the sum of their angles" do
+    [[1, 0, 0], [0, 1, 0], [0, 0, 1], [2, 2, 8]].each do |axis|
+      axis = Geo3d::Vector.new *axis
+
+      [[2.3, 0.4],
+       [2.3, 0.4, -0.1],
+       [-1, -0.25, -0.5, 2.3]].each do |angles|
+        product = nil
+        angles.each do |angle|
+          q = Geo3d::Quaternion.from_axis axis, angle
+          if product.nil?
+            product = q
+          else
+            product *= q
+          end
+        end
+
+        Geo3d::Utils.float_cmp(product.angle, angles.inject(:+)).should == true
+        product.axis.should == axis.normalize
+      end
+    end
+  end
+
+
+
 
   #todo: add tests for quaternion interpolation
 
