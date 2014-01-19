@@ -160,12 +160,16 @@ Rotation
     angle = 0.9
     Geo3d::Matrix.rotation axis, angle #rotate about an arbitrary axis
 ```
-Projection matrix constructors
+Projection matrix constructors ala Direct3D   (clip space has a range of 0 to 1)
 ```
     Geo3d::Matrix.perspective_fov_rh fovy, aspect, z_near, z_far  #returns a right handed perspective projection matrix
     Geo3d::Matrix.perspective_fov_lh fovy, aspect, z_near, z_far  #returns a left handed perspective projection matrix
     Geo3d::Matrix.ortho_off_center_rh left, right, bottom, top, z_near, z_far #returns a right handed orthographic projection matrix
     Geo3d::Matrix.ortho_off_center_lh left, right, bottom, top, z_near, z_far #returns a left handed orthographic projection matrix
+```
+Projection matrix constructors ala OpenGL  (clip space has a range of -1 to 1)
+```
+    Geo3d::Matrix.glu_perspective_degrees fovy, aspect, zn, zf #returns an opengl style right handed projection matrix
 ```
 View matrix constructors
 ```
