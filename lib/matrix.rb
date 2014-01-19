@@ -186,6 +186,15 @@ module Geo3d
         transformed_vector.z = _13 * vec.x + _23 * vec.y + _33 * vec.z + _43 * vec.w
         transformed_vector.w = _14 * vec.x + _24 * vec.y + _34 * vec.z + _44 * vec.w
         return transformed_vector
+      elsif Triangle == v.class
+        tri = v
+        transformed_tri = Triangle.new
+        transformed_tri.a = self * tri.a
+        transformed_tri.b = self * tri.b
+        transformed_tri.c = self * tri.c
+        return transformed_tri
+      elsif Array == v.class
+        return v.map { |i| self * i }
       else
         scalar = v
         result._11 = _11 * scalar
@@ -238,7 +247,7 @@ module Geo3d
     end
 
     def transform_coord vec
-      self * Vector.new( vec.x, vec.y, vec.z, 1.0 )
+      self * Vector.new(vec.x, vec.y, vec.z, 1.0)
     end
 
     def transform vec
@@ -436,7 +445,38 @@ module Geo3d
     end
 
     def to_s
-      (0..3).to_a.map{ |i| row(i).to_s}.join "\n"
+      (0..3).to_a.map { |i| row(i).to_s }.join "\n"
+    end
+
+    def self.glu_perspective_degrees fovy, aspect, zn, zf
+      fovy = fovy.to_f
+      aspect = aspect.to_f
+      zn = zn.to_f
+      zf = zf.to_f
+      range = zn*Math.tan(Geo3d::Utils.to_radians(fovy/2.0))
+      self.gl_frustum -range*aspect, range*aspect, -range, range, zn, zf
+    end
+
+    def self.gl_frustum l, r, b, t, zn, zf
+      l = l.to_f
+      r = r.to_f
+      b = b.to_f
+      t = t.to_f
+      zn = zn.to_f
+      zf = zf.to_f
+      a = (r+l) / (r-l)
+      b = (t+b) / (t-b)
+      c = -(zf + zn) / (zf - zn)
+      d = -(2 * zf * zn) / (zf - zn)
+      matrix = self.new
+      matrix._11 = 2.0 * zn / (r-l)
+      matrix._31 = a
+      matrix._22 = 2.0 * zn / (t-b)  #todo: the man page says multiply this by two, but I don't actually match what glFrustum does if I do
+      matrix._32 = b
+      matrix._33 = c
+      matrix._43 = d
+      matrix._34 = -1.0
+      matrix
     end
 
     def self.perspective_fov_rh fovy, aspect, zn, zf

@@ -3,5 +3,6 @@ require 'vector'
 require 'matrix'
 require 'quaternion'
 require 'plane'
+require 'triangle'
 
 
