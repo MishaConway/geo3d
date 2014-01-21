@@ -87,7 +87,11 @@ Linear Interpolation
 ```
     vec_a.lerp vec_b, 0.4  #returns a new vector which is the 40% linear interpolation between vec_a and vec_b
 ```
-
+Screenspace projections
+```
+    vec.project viewport, projection, view, world  #transform an objectspace vertex to screenspace
+    vec.unproject viewport, projection, view, world  #transform a screenspace vertex to objectspace
+```
 
 ## Matrix
 
@@ -175,6 +179,9 @@ View matrix constructors
 ```
     Geo3d::Matrix.look_at_rh eye_position, look_at_position, up_direction #returns a right handed view matrix
     Geo3d::Matrix.look_at_lh eye_position, look_at_position, up_direction #returns a left handed view matrix
+```
+Viewport matrix constructors
+``` Geo3d::Matrix.viewport x, y, width, height
 ```
 Misc constructors
 ```
