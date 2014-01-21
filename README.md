@@ -181,7 +181,8 @@ View matrix constructors
     Geo3d::Matrix.look_at_lh eye_position, look_at_position, up_direction #returns a left handed view matrix
 ```
 Viewport matrix constructors
-``` Geo3d::Matrix.viewport x, y, width, height
+```
+    Geo3d::Matrix.viewport x, y, width, height
 ```
 Misc constructors
 ```
