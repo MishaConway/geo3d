@@ -471,7 +471,7 @@ module Geo3d
       matrix = self.new
       matrix._11 = 2.0 * zn / (r-l)
       matrix._31 = a
-      matrix._22 = 2.0 * zn / (t-b)  #todo: the man page says multiply this by two, but I don't actually match what glFrustum does if I do
+      matrix._22 = zn / (t-b)  #todo: the man page says multiply this by two, but I don't actually match what glFrustum does if I do
       matrix._32 = b
       matrix._33 = c
       matrix._43 = d
@@ -609,6 +609,11 @@ module Geo3d
       matrix
     end
 
+
+    def self.viewport x, y, width, height
+      self.scaling(width.to_f / 2.0, height.to_f / 2.0, 0.5) * self.translation(x.to_f + width.to_f / 2.0, y.to_f + height.to_f / 2.0, 0.5)
+    end
+
     def self.reflection reflection_plane
       reflection_plane = Geo3d::Vector.new *reflection_plane.to_a
       reflection_matrix = self.new
@@ -673,20 +678,20 @@ module Geo3d
 
     def self.translation x, y, z
       translation_matrix = self.new
-      translation_matrix._11 = translation_matrix._22 = translation_matrix._33 = translation_matrix._44 = 1
+      translation_matrix._11 = translation_matrix._22 = translation_matrix._33 = translation_matrix._44 = 1.0
       #todo: consider simplifying with identity
-      translation_matrix._41 = x
-      translation_matrix._42 = y
-      translation_matrix._43 = z
+      translation_matrix._41 = x.to_f
+      translation_matrix._42 = y.to_f
+      translation_matrix._43 = z.to_f
       translation_matrix
     end
 
     def self.scaling x, y, z
       scaling_matrix = self.new
-      scaling_matrix._11 = x
-      scaling_matrix._22 = y
-      scaling_matrix._33 = z
-      scaling_matrix._44 = 1
+      scaling_matrix._11 = x.to_f
+      scaling_matrix._22 = y.to_f
+      scaling_matrix._33 = z.to_f
+      scaling_matrix._44 = 1.0
       scaling_matrix
     end
 

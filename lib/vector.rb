@@ -114,6 +114,18 @@ module Geo3d
       l.w = w + (vec.w - w)*s
       l
     end
+
+    def project viewport, projection, view, world
+      clipspace_vector = projection * view * world * one_w
+      normalized_clipspace_vector = (clipspace_vector / clipspace_vector.w.to_f).one_w
+      viewport * normalized_clipspace_vector
+    end
+
+    def unproject viewport, projection, view, world
+      normalized_clipspace_vector = viewport.inverse * one_w
+      almost_objectspace_vector = (projection * view * world).inverse * normalized_clipspace_vector.one_w
+      (almost_objectspace_vector / almost_objectspace_vector.w).one_w
+    end
   end
 end
 

@@ -91,5 +91,45 @@ describe Geo3d::Matrix do
     end
   end
 
+  it "should project a vector the same way gluProject does" do
+    viewport_data = {:x => 0, :y => 0, :width => 640, :height => 480}
+    projection_data = {:fovy_in_degrees => 60.0, :width => 640.0, :height => 480.0, :near => 0.1, :far => 1000.0}
+    view_data = {:eye => [1.0, 0.0, 0.0], :focus => [200.0, -40.0, -100.0], :up => [0.0, 1.0, 0.0]}
+    eye = Geo3d::Vector.new *view_data[:eye]
+    focus = Geo3d::Vector.new *view_data[:focus]
+    up = Geo3d::Vector.new *view_data[:up]
+
+
+    viewport_matrix = Geo3d::Matrix.viewport viewport_data[:x], viewport_data[:y], viewport_data[:width], viewport_data[:height]
+    projection_matrix = Geo3d::Matrix.glu_perspective_degrees(projection_data[:fovy_in_degrees], projection_data[:width].to_f/projection_data[:height].to_f, projection_data[:near], projection_data[:far])
+    view_matrix = Geo3d::Matrix.look_at_rh(eye, focus, up)
+
+    vector = Geo3d::Vector.new 300, 100, -500
+
+    glu_vector = gluProject vector.x, vector.y, vector.z, projection_matrix.to_a, view_matrix.to_a, [viewport_data[:x], viewport_data[:y], viewport_data[:width], viewport_data[:height]]
+
+    puts "glu vect is #{glu_vector.inspect}"
+    Geo3d::Vector.new(*glu_vector).should == vector.project(viewport_matrix, projection_matrix, view_matrix, Geo3d::Matrix.identity).zero_w
+  end
+
+  it "should unproject a vector the same way gluUnproject does" do
+    viewport_data = {:x => 0, :y => 0, :width => 640, :height => 480}
+    projection_data = {:fovy_in_degrees => 60.0, :width => 640.0, :height => 480.0, :near => 0.1, :far => 1000.0}
+    view_data = {:eye => [1.0, 0.0, 0.0], :focus => [200.0, -40.0, -100.0], :up => [0.0, 1.0, 0.0]}
+    eye = Geo3d::Vector.new *view_data[:eye]
+    focus = Geo3d::Vector.new *view_data[:focus]
+    up = Geo3d::Vector.new *view_data[:up]
+
+
+    viewport_matrix = Geo3d::Matrix.viewport viewport_data[:x], viewport_data[:y], viewport_data[:width], viewport_data[:height]
+    projection_matrix = Geo3d::Matrix.glu_perspective_degrees(projection_data[:fovy_in_degrees], projection_data[:width].to_f/projection_data[:height].to_f, projection_data[:near], projection_data[:far])
+    view_matrix = Geo3d::Matrix.look_at_rh(eye, focus, up)
+
+    vector = Geo3d::Vector.new 574.1784279190967, 294.42147391181595, 0.8485367205965038
+
+    glu_vector = gluUnProject vector.x, vector.y, vector.z, projection_matrix.to_a, view_matrix.to_a, [viewport_data[:x], viewport_data[:y], viewport_data[:width], viewport_data[:height]]
+    Geo3d::Vector.new(*glu_vector).should == vector.unproject(viewport_matrix, projection_matrix, view_matrix, Geo3d::Matrix.identity).zero_w
+  end
+
 
 end
