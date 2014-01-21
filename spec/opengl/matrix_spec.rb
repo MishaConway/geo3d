@@ -69,6 +69,20 @@ describe Geo3d::Matrix do
     end
   end
 
+  it "gl_ortho should be equivalent to opengl glOrtho" do
+    [{:l => -2, :r => 2, :b => -2, :t => 2, :zn => 1, :zf => 1000},
+     {:l => -231, :r => 453, :b => -232, :t => 2786, :zn => 9.221, :zf => 10000}].each do |data|
+      glMatrixMode GL_PROJECTION
+      glLoadIdentity
+      glOrtho data[:l], data[:r], data[:b], data[:t], data[:zn], data[:zf]
+
+      gl_version = Geo3d::Matrix.new *(glGetFloatv(GL_PROJECTION_MATRIX).flatten)
+      geo3d_matrix = Geo3d::Matrix.gl_ortho data[:l], data[:r], data[:b], data[:t], data[:zn], data[:zf]
+
+      gl_version.should == geo3d_matrix
+    end
+  end
+
   it "should multiply matrices the same way opengl does" do
     10000.times do
       a_values = (0..15).to_a.map do |i|

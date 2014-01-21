@@ -471,13 +471,15 @@ module Geo3d
       matrix = self.new
       matrix._11 = 2.0 * zn / (r-l)
       matrix._31 = a
-      matrix._22 = zn / (t-b)  #todo: the man page says multiply this by two, but I don't actually match what glFrustum does if I do
+      matrix._22 = zn / (t-b) #todo: the man page says multiply this by two, but I don't actually match what glFrustum does if I do
       matrix._32 = b
       matrix._33 = c
       matrix._43 = d
       matrix._34 = -1.0
       matrix
     end
+
+
 
     def self.perspective_fov_rh fovy, aspect, zn, zf
       fovy = fovy.to_f
@@ -508,6 +510,24 @@ module Geo3d
       matrix._33 = zf/(zf - zn)
       matrix._34 = 1
       matrix._43 = zn*zf/(zn - zf)
+      matrix
+    end
+
+    def self.gl_ortho l, r, b, t, zn, zf
+      l = l.to_f
+      r = r.to_f
+      b = b.to_f
+      t = t.to_f
+      zn = zn.to_f
+      zf = zf.to_f
+      matrix = self.new
+      matrix._11 = 2.0 / (r-l)
+      matrix._22 = 2.0 / (t-b)
+      matrix._33 = -2.0 / (zf - zn)
+      matrix._41 = -(r+l) / (r-l)
+      matrix._42 = -(t+b) / (t-b)
+      matrix._43 = -(zf+zn) / (zf-zn)
+      matrix._44 = 1.0
       matrix
     end
 
