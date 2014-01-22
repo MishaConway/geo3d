@@ -6,10 +6,10 @@ module Geo3d
       [a, b, c]
     end
 
-    def initialize
-      @a = Vector.new
-      @b = Vector.new
-      @c = Vector.new
+    def initialize *args
+      @a = args.size > 0 ? args[0] : Vector.new
+      @b = args.size > 1 ? args[1] : Vector.new
+      @c = args.size > 2 ? args[2] : Vector.new
     end
 
     def flip!
@@ -35,12 +35,12 @@ module Geo3d
       reference_normal.dot(sum) / 2.0
     end
 
-    def clockwise?
-      signed_area > 0
+    def clockwise? reference_normal = Vector.new(0,0,-1)
+      signed_area( reference_normal ) > 0
     end
 
-    def counter_clockwise?
-      signed_area < 0
+    def counter_clockwise? reference_normal = Vector.new(0,0,-1)
+      signed_area( reference_normal ) < 0
     end
   end
 end
