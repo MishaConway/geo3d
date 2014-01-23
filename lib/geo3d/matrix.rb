@@ -1,5 +1,3 @@
-require 'utils'
-
 module Geo3d
   class Matrix
     attr_accessor :_11, :_12, :_13, :_14
