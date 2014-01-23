@@ -219,6 +219,10 @@ Normalize
     plane.normalize #returns a normalized version of the plane
     plane.normalize! #normalizes the plane in place
 ```
+Normal
+```
+    plane.normal #returns the normal of the plane
+```
 Line intersection
 ```
     plane.line_intersection line_start, line_end  #returns the intersection of the line onto the plane
@@ -302,7 +306,37 @@ Constructors
 
 ```
 
-Documentation coming soon!
+
+## Triangle
+
+Represents a triangle in three dimensional space
+
+Constructors
+```
+    Geo3d::Triangle.from_axis rotation_axis, radians  #returns a quaternion from an axis and angle
+    Geo3d::Quaternion.from_matrix m  #returns a quaternion from a rotation matrix
+    Geo3d::Quaternion.identity  #returns the identity quaternion
+```
+Normal
+```
+    triangle.normal #returns the normal of the plane
+```
+Winding
+```
+    triangle.clockwise? #is the triangle winded clockwise?
+    triangle.counter_clockwise? #is the triangle winded counter clockwise?
+```
+Flipping
+```
+    triangle.flip #returns a flipped version of the triangle (reverses the winding)
+    triangle.flip! #flips the triangle in place
+```
+signed area
+```
+    triangle.signed_area
+```
+
+
 
 
 
