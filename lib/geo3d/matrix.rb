@@ -455,28 +455,27 @@ module Geo3d
       self.gl_frustum -range*aspect, range*aspect, -range, range, zn, zf
     end
 
-    def self.gl_frustum l, r, b, t, zn, zf
+    def self.gl_frustum l, r, bottom, t, zn, zf
       l = l.to_f
       r = r.to_f
-      b = b.to_f
+      bottom = bottom.to_f
       t = t.to_f
       zn = zn.to_f
       zf = zf.to_f
       a = (r+l) / (r-l)
-      b = (t+b) / (t-b)
+      b = (t+bottom) / (t-bottom)
       c = -(zf + zn) / (zf - zn)
       d = -(2 * zf * zn) / (zf - zn)
       matrix = self.new
       matrix._11 = 2.0 * zn / (r-l)
       matrix._31 = a
-      matrix._22 = zn / (t-b) #todo: the man page says multiply this by two, but I don't actually match what glFrustum does if I do
+      matrix._22 = 2.0 * zn / (t-bottom)
       matrix._32 = b
       matrix._33 = c
       matrix._43 = d
       matrix._34 = -1.0
       matrix
     end
-
 
 
     def self.perspective_fov_rh fovy, aspect, zn, zf

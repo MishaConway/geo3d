@@ -3,9 +3,17 @@ require 'spec_helper'
 describe Geo3d::Matrix do
   before :each do
     @gl_initialized = false
-    require "ruby-sdl-ffi"
+    #require "ruby-sdl-ffi"
     require "opengl"
+    include Gl,Glu,Glut
 
+    glutInit
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+    glutInitWindowSize(500, 500)
+    glutInitWindowPosition(100, 100)
+    glutCreateWindow('test')
+
+=begin
     if SDL.Init(SDL::INIT_VIDEO) < 0
       puts "not able to init"
     else
@@ -22,7 +30,8 @@ describe Geo3d::Matrix do
         @gl_initialized = true
       end
     end
-    raise "opengl not able to initialize" unless @gl_initialized
+=end
+ #   raise "opengl not able to initialize" unless @gl_initialized
   end
 
 
