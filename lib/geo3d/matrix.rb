@@ -268,7 +268,7 @@ module Geo3d
       scaling = scaling_component
       return nil if scaling.x.zero? || scaling.y.zero? || scaling.z.zero?
       m = Matrix.new
-      m._11=_11 / scaling.x
+      m._11=_11/scaling.x
       m._12=_12/scaling.x
       m._13=_13/scaling.x
       m._21=_21/scaling.y

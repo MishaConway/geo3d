@@ -92,6 +92,14 @@ Screenspace projections
     vec.project viewport, projection, view, world  #transform an objectspace vertex to screenspace
     vec.unproject viewport, projection, view, world  #transform a screenspace vertex to objectspace
 ```
+Reflections
+```
+    vec.reflect normal, incident
+```
+Refractions
+```
+    vec.refract normal, incident, index_of_refraction
+```
 
 ## Matrix
 

@@ -34,7 +34,7 @@ module Geo3d
     end
 
     def xyz
-      self.class.new x, y, z
+      self.class.new x, y, z, 0
     end
 
     def to_s
@@ -125,6 +125,23 @@ module Geo3d
       normalized_clipspace_vector = viewport.inverse * one_w
       almost_objectspace_vector = (projection * view * world).inverse * normalized_clipspace_vector.one_w
       (almost_objectspace_vector / almost_objectspace_vector.w).one_w
+    end
+
+    def self.reflect normal, incident
+      s = 2.0 * normal.xyz.dot(incident.xyz)
+      (incident - normal * s).xyz
+    end
+
+    def self.refract normal, incident, index_of_refraction
+      t = incident.xyz.dot normal.xyz
+      r = 1.0 - index_of_refraction * index_of_refraction * (1.0 - t*t)
+
+      if r < 0.0 # Total internal reflection
+        self.new 0, 0, 0, 0
+      else
+      	s = index_of_refraction * t + Math.sqrt(r)
+        (incident * index_of_refraction - normal * s).xyz
+      end
     end
   end
 end

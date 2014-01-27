@@ -21,10 +21,10 @@ describe Geo3d::Vector do
   end
 
   it "should support cross products with other vectors" do
-    [{:a => [1,0,0,0], :b => [0,1,0,0], :expected => [0,0,1,0] },
-     {:a => [1,0,0,1], :b => [0,1,0,1], :expected => [0,0,1,0] },
-     {:a => [1,1,1,1], :b => [1,1,1,1], :expected => [0,0,0,0] },
-     {:a => [2,99,6,0], :b => [-11,-91,77,0], :expected => [8169.000000, -220.000000, 907.000000, 0.000000] }].each do |data|
+    [{:a => [1, 0, 0, 0], :b => [0, 1, 0, 0], :expected => [0, 0, 1, 0]},
+     {:a => [1, 0, 0, 1], :b => [0, 1, 0, 1], :expected => [0, 0, 1, 0]},
+     {:a => [1, 1, 1, 1], :b => [1, 1, 1, 1], :expected => [0, 0, 0, 0]},
+     {:a => [2, 99, 6, 0], :b => [-11, -91, 77, 0], :expected => [8169.000000, -220.000000, 907.000000, 0.000000]}].each do |data|
       a = Geo3d::Vector.new *data[:a]
       b = Geo3d::Vector.new *data[:b]
       expected = Geo3d::Vector.new *data[:expected]
@@ -64,13 +64,38 @@ describe Geo3d::Vector do
   end
 
   it "should be able to linearly interpolate" do
-    [{:a => [0,0,0,0], :b => [1,1,1,1], :interpolate_fraction => 0.5, :expected => [0.5, 0.5, 0.5, 0.5]},
-     {:a => [23,-3,425,-332], :b => [-22,-45443,886,122], :interpolate_fraction => 0.21234433, :expected => [13.444505, -9651.926758, 522.890747, -235.595673]}].each do |data|
+    [{:a => [0, 0, 0, 0], :b => [1, 1, 1, 1], :interpolate_fraction => 0.5, :expected => [0.5, 0.5, 0.5, 0.5]},
+     {:a => [23, -3, 425, -332], :b => [-22, -45443, 886, 122], :interpolate_fraction => 0.21234433, :expected => [13.444505, -9651.926758, 522.890747, -235.595673]}].each do |data|
       a = Geo3d::Vector.new *data[:a]
       b = Geo3d::Vector.new *data[:b]
       expected = Geo3d::Vector.new *data[:expected]
       s = data[:interpolate_fraction]
-      a.lerp( b, s).should == expected
+      a.lerp(b, s).should == expected
+    end
+  end
+
+  it "should calculate reflection" do
+    [{:normal => [0, 1, 0], :incident => [1, 1, 0], :expected => [1, -1, 0]},
+     {:normal => [0, 1, 0], :incident => [0, -1, 0], :expected => [0, 1, 0]},
+     {:normal => [22, 33, 68], :incident => [65, -23, -23], :expected => [39357.000000, 58915.000000, 121425.000000, 0.000000]}].each do |data|
+      normal = Geo3d::Vector.new *data[:normal]
+      incident = Geo3d::Vector.new *data[:incident]
+      expected = Geo3d::Vector.new *data[:expected]
+      Geo3d::Vector.reflect(normal, incident).should == expected
+    end
+  end
+
+  it "should calculate refraction" do
+    [{:normal => [0, 1, 0], :incident => [1, 1, 0], :index_of_ref => 0.5, :expected => [0.5, -1, 0]},
+     {:normal => [0, 1, 0], :incident => [0, -1, 0], :index_of_ref => 21.345, :expected => [0, -1, 0]},
+     {:normal => [22, 33, 68], :incident => [65, -23, -23], :index_of_ref => 17.5678, :expected => [1142.121826, -403.737152, -403.395355]},
+     {:normal => [1, 0, 0], :incident => [0, 1, 0], :index_of_ref => 0.75, :expected => [-0.661438, 0.750000, 0.000000, 0.000000]}
+    ].each do |data|
+
+      normal = Geo3d::Vector.new *data[:normal]
+      incident = Geo3d::Vector.new *data[:incident]
+      expected = Geo3d::Vector.new *data[:expected]
+      Geo3d::Vector.refract(normal, incident, data[:index_of_ref]).should == expected
     end
   end
 

@@ -34,6 +34,12 @@ describe Geo3d::Matrix do
  #   raise "opengl not able to initialize" unless @gl_initialized
   end
 
+  it "the identity constructor should be functionally equivalent to glLoadIdentity" do
+    glMatrixMode GL_MODELVIEW
+    glLoadIdentity
+    gl_version = Geo3d::Matrix.new *glGetFloatv(GL_MODELVIEW_MATRIX).flatten
+    Geo3d::Matrix.identity.should == gl_version
+  end
 
   it "the right handed view constructor should be functionally equivalent to gluLookAt" do
     [{:eye => [1, 0, 0], :focus => [100, 0, -100], :up => [0, 1, 0]}].each do |data|
