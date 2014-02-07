@@ -42,5 +42,8 @@ module Geo3d
     def counter_clockwise? reference_normal = Vector.new(0,0,-1)
       signed_area( reference_normal ) < 0
     end
+
+    alias :cw? :clockwise?
+    alias :ccw? :counter_clockwise?
   end
 end
