@@ -3,10 +3,7 @@ module Geo3d
     attr_reader :x, :y, :z, :w
 
     def initialize *args
-      @x = 0.0
-      @y = 0.0
-      @z = 0.0
-      @w = 0.0
+      @x, @y, @z, @w = 0.0, 0.0, 0.0, 0.0
       @x = args[0].to_f if args.size > 0
       @y = args[1].to_f if args.size > 1
       @z = args[2].to_f if args.size > 2
