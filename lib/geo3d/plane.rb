@@ -7,10 +7,7 @@ module Geo3d
     alias :w :d
 
     def initialize *args
-      @a = 0.0
-      @b = 0.0
-      @c = 0.0
-      @d = 0.0
+      @a, @b, @c, @d = 0.0, 0.0, 0.0, 0.0
       @a = args[0].to_f if args.size > 0
       @b = args[1].to_f if args.size > 1
       @c = args[2].to_f if args.size > 2

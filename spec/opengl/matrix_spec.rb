@@ -3,6 +3,8 @@ require "opengl"
 require "glu"
 require "glut"
 
+# This spec tests the accuracy of Geo3D by comparing its calculations against the same calculations made in OpenGL
+
 describe Geo3d::Matrix do
   let(:gl){ Class.new{extend GL} }
   let(:glu){ Class.new{extend GLU} }
