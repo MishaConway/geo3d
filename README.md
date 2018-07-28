@@ -1,6 +1,6 @@
 # Geo3d
 
-TODO: Write a gem description
+Library for common 3d graphics vector and matrix operations
 
 ## Installation
 
